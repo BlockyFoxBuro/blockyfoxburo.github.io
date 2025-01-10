@@ -1,2 +1,1 @@
-# :3c
-i dont know exactly what im doing
+# blockyfoxburo.github.io
