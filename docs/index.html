@@ -30,7 +30,7 @@
         /* Warm/Paper Palette */
         --bg-color: #0c0a09;
         --surface: rgba(28, 25, 23, 0.65);
-        --surface-hover: rgba(41, 37, 36, 0.85);
+        --surface-hover: rgba(41, 37, 36, 0.95);
         --border: rgba(255, 255, 255, 0.1);
         --highlight: #f5f5f4;
         --text-main: #e7e5e4;
@@ -38,6 +38,12 @@
         --accent: #d97706;
 
         --transition: cubic-bezier(0.25, 1, 0.5, 1);
+        --steam-transition: cubic-bezier(
+          0.175,
+          0.885,
+          0.32,
+          1.275
+        ); /* Bouncy pop */
 
         --online: #22c55e;
         --idle: #eab308;
@@ -72,7 +78,6 @@
         overflow-y: auto;
         overflow-x: hidden;
         position: relative;
-        /* Increased padding to prevent cutoff at 1.1 scale */
         padding: 80px 0 40px 0;
       }
 
@@ -99,7 +104,7 @@
           linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
           linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
         background-size: 50px 50px;
-        z-index: -1;
+        z-index: -2; /* Just above paper-bg */
         pointer-events: none;
         will-change: transform;
         opacity: 0.3;
@@ -132,7 +137,6 @@
         transform-style: preserve-3d;
         perspective: 1000px;
         z-index: 1;
-        /* Margins adjusted for centering */
         margin: 0 auto;
       }
 
@@ -227,13 +231,12 @@
         box-shadow: var(--shadow-paper);
         transition:
           border-color 0.2s,
-          background 0.2s; /* Exclude shadow from transition */
+          background 0.2s;
         position: relative;
-        margin-top: 8px; /* separation from buttons */
+        margin-top: 8px;
       }
 
       .discord-widget:hover {
-        /* Hover transform removed to prioritize shadow animation */
         background: var(--surface-hover);
         border-color: var(--text-muted);
       }
@@ -336,16 +339,13 @@
         position: relative;
         transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
         border: 1px solid var(--border);
-
-        /* Animation properties for open state */
-        max-height: 200px; /* Arbitrary large height */
+        max-height: 200px;
         opacity: 1;
         overflow: hidden;
         margin-top: 0;
       }
 
       .activity-section.collapsed {
-        /* Animate to closed state */
         max-height: 0;
         opacity: 0;
         padding-top: 0;
@@ -454,18 +454,41 @@
         backdrop-filter: blur(6px);
         border: 1px solid var(--border);
         text-decoration: none;
-        transition:
-          border-color 0.2s,
-          background 0.2s;
-        transform: translateZ(0);
+        /* Transition for smooth scaling/rotate */
+        transition: all 0.3s var(--steam-transition);
+
+        /* BASE STATE: 
+               - Apply random organic rotation via var
+               - Apply subtle inverted translation (moves WITH mouse)
+            */
+        transform: rotate(var(--organic-rot, 0deg)) translateZ(0)
+          translateX(calc(var(--pointer-x) * 10px))
+          translateY(calc(var(--pointer-y) * 10px));
+
         box-shadow: var(--shadow-paper);
-        /* Radius applied via JS */
+        position: relative;
+        z-index: 1;
+        /* Allow individual rotation override */
+        transform-style: preserve-3d;
       }
 
       .link-row:hover {
-        /* Hover transform removed to prioritize shadow animation */
+        /* HOVER STATE:
+               - Scale: 1.06 (Reduced from 1.25 to ~1/4 intensity)
+               - Rotation: Signs inverted back (Now matches container direction mostly)
+               - Translation: Magnetic pull towards cursor
+               - TranslateZ: Pop out
+            */
+        transform: scale(1.06) rotate(var(--organic-rot, 0deg)) translateZ(30px)
+          translateX(calc(var(--pointer-x) * 15px))
+          translateY(calc(var(--pointer-y) * 15px))
+          rotateY(calc(var(--pointer-x) * 10deg))
+          rotateX(calc(var(--pointer-y) * -10deg));
+
         background: var(--surface-hover);
         border-color: var(--text-muted);
+        z-index: 100;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
       }
 
       .link-icon {
@@ -505,16 +528,7 @@
       }
 
       .view-counter {
-        position: fixed;
-        bottom: 20px;
-        left: 20px;
-        font-size: 0.75rem;
-        color: rgba(255, 255, 255, 0.4);
-        display: none; /* Hidden as requested */
-        align-items: center;
-        gap: 6px;
-        font-family: "Courier New", monospace;
-        z-index: 10;
+        display: none;
       }
     </style>
   </head>
@@ -567,13 +581,12 @@
           icon: "fa-solid fa-envelope",
           desc: "email me for business inquires!",
           isEmail: true,
-          u: "r12azqha+github",
-          d: "gmail.com",
+          u: "blockyfoxburo",
+          d: "r12azqha.com",
           linkText: "initiate handshake",
         },
       ];
-
-      // Softer/wider organic generation
+      // Softer/wider organic generation - Now returns CSS Variable string
       const generateOrganicStyle = () => {
         const r1 = Math.floor(10 + Math.random() * 8);
         const r2 = Math.floor(10 + Math.random() * 8);
@@ -581,7 +594,8 @@
         const r4 = Math.floor(10 + Math.random() * 8);
         const rot = (Math.random() * 1.5 - 0.75).toFixed(2);
 
-        return `border-radius: ${r1}px ${r2}px ${r3}px ${r4}px; transform: rotate(${rot}deg);`;
+        // Set radius directly, set rotation as variable for transform composition
+        return `border-radius: ${r1}px ${r2}px ${r3}px ${r4}px; --organic-rot: ${rot}deg;`;
       };
 
       const fetchDiscordProfile = async () => {
@@ -900,13 +914,22 @@
           const sX = 6 + currentX * 5;
           const sY = 6 + currentY * 5;
 
+          // Inject mouse coordinates for CSS calculations (used by button hover)
+          container.style.setProperty("--pointer-x", currentX);
+          container.style.setProperty("--pointer-y", currentY);
+
           document.documentElement.style.setProperty("--shadow-x", `${sX}px`);
           document.documentElement.style.setProperty("--shadow-y", `${sY}px`);
 
-          // Adjusted scale to 1.1 per request
-          container.style.transform = `perspective(1000px) scale(1.1) rotateY(${currentX * 5}deg) rotateX(${-currentY * 10}deg)`;
-          bgLayer.style.transform = `translate(${-currentX * 10}px, ${-currentY * 20}px) scale(1.1)`;
-          grid.style.transform = `translate(${-currentX * 20}px, ${-currentY * 40}px)`;
+          // FOREGROUND: Standard Tilt
+          container.style.transform = `perspective(1000px) scale(1.1) rotateY(${currentX * 8}deg) rotateX(${-currentY * 14}deg)`;
+
+          // BACKGROUND: Inverted Translation (Moves WITH cursor)
+          bgLayer.style.transform = `translate(${currentX * 15}px, ${currentY * 15}px) scale(1.1)`;
+
+          // GRID: Matches BG direction
+          grid.style.transform = `translate(${currentX * 15}px, ${currentY * 15}px)`;
+
           requestAnimationFrame(animate);
         };
         animate();
