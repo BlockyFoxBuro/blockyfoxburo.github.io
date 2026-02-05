@@ -340,13 +340,16 @@
         position: relative;
         transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
         border: 1px solid var(--border);
-        max-height: 200px;
+
+        /* Animation properties for open state */
+        max-height: 200px; /* Arbitrary large height */
         opacity: 1;
         overflow: hidden;
         margin-top: 0;
       }
 
       .activity-section.collapsed {
+        /* Animate to closed state */
         max-height: 0;
         opacity: 0;
         padding-top: 0;
@@ -476,6 +479,7 @@
       .link-row:hover {
         /* HOVER STATE:
                - Signs in calc reversed to match inverted parallax request
+               - Scale: 1.06 (Reduced from 1.25 to ~1/4 intensity)
             */
         transform: scale(1.06) rotate(var(--organic-rot, 0deg)) translateZ(30px)
           translateX(calc(var(--pointer-x) * 15px))
@@ -547,6 +551,7 @@
       const DISCORD_ID = "321617481766535169";
 
       let elapsedInterval;
+      let isGyro = false;
 
       const linksData = [
         {
@@ -901,6 +906,8 @@
         });
         if (window.DeviceOrientationEvent) {
           window.addEventListener("deviceorientation", (e) => {
+            isGyro = true;
+            // Mobile Sensitivity normalization
             targetX = Math.min(Math.max(e.gamma, -45), 45) / 45;
             targetY = Math.min(Math.max(e.beta, -45), 45) / 45;
           });
@@ -909,25 +916,33 @@
           currentX += (targetX - currentX) * 0.05;
           currentY += (targetY - currentY) * 0.05;
 
-          // Inverted signs for all calculations to fulfill the "invert" request
-          const sX = 6 + -currentX * 5;
-          const sY = 6 + -currentY * 5;
+          // Multiplier for inversion logic
+          // Invert every vector if on mobile gyro and in vertical/portrait mode
+          const isVertical = window.innerHeight > window.innerWidth;
+          const m = isGyro && isVertical ? -1 : 1;
 
-          // Inverting coordinates injected into CSS variables
-          container.style.setProperty("--pointer-x", -currentX);
-          container.style.setProperty("--pointer-y", -currentY);
+          // Final processed coordinates
+          const finalX = m * currentX;
+          const finalY = m * currentY;
 
+          // Inverting coordinates injected into CSS variables for buttons
+          container.style.setProperty("--pointer-x", -finalX);
+          container.style.setProperty("--pointer-y", -finalY);
+
+          // Shadow Logic: top-left light fixed, shadow reacts to final tilt
+          const sX = 6 + finalX * -5;
+          const sY = 6 + finalY * -5;
           document.documentElement.style.setProperty("--shadow-x", `${sX}px`);
           document.documentElement.style.setProperty("--shadow-y", `${sY}px`);
 
-          // FOREGROUND: Inverted Tilt
-          container.style.transform = `perspective(1000px) scale(1.1) rotateY(${-currentX * 8}deg) rotateX(${currentY * 14}deg)`;
+          // FOREGROUND: Tilt
+          container.style.transform = `perspective(1000px) scale(1.1) rotateY(${-finalX * 8}deg) rotateX(${finalY * 14}deg)`;
 
-          // BACKGROUND: Inverted Translation (Matches container direction)
-          bgLayer.style.transform = `translate(${-currentX * 15}px, ${-currentY * 15}px) scale(1.1)`;
+          // BACKGROUND: Moves WITH cursor logic (which is inverted by 'm' on mobile)
+          bgLayer.style.transform = `translate(${finalX * 15}px, ${finalY * 15}px) scale(1.1)`;
 
-          // GRID: Matches inverted BG direction
-          grid.style.transform = `translate(${-currentX * 15}px, ${-currentY * 15}px)`;
+          // GRID: Matches BG direction
+          grid.style.transform = `translate(${finalX * 15}px, ${finalY * 15}px)`;
 
           requestAnimationFrame(animate);
         };
