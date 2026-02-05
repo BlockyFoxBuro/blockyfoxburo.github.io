@@ -78,6 +78,7 @@
         overflow-y: auto;
         overflow-x: hidden;
         position: relative;
+        /* Increased padding to prevent cutoff at 1.1 scale */
         padding: 80px 0 40px 0;
       }
 
@@ -459,7 +460,7 @@
 
         /* BASE STATE: 
                - Apply random organic rotation via var
-               - Apply subtle inverted translation (moves WITH mouse)
+               - Substituted calculations to align with inverted logic
             */
         transform: rotate(var(--organic-rot, 0deg)) translateZ(0)
           translateX(calc(var(--pointer-x) * 10px))
@@ -474,16 +475,13 @@
 
       .link-row:hover {
         /* HOVER STATE:
-               - Scale: 1.06 (Reduced from 1.25 to ~1/4 intensity)
-               - Rotation: Signs inverted back (Now matches container direction mostly)
-               - Translation: Magnetic pull towards cursor
-               - TranslateZ: Pop out
+               - Signs in calc reversed to match inverted parallax request
             */
         transform: scale(1.06) rotate(var(--organic-rot, 0deg)) translateZ(30px)
           translateX(calc(var(--pointer-x) * 15px))
           translateY(calc(var(--pointer-y) * 15px))
-          rotateY(calc(var(--pointer-x) * 10deg))
-          rotateX(calc(var(--pointer-y) * -10deg));
+          rotateY(calc(var(--pointer-x) * -10deg))
+          rotateX(calc(var(--pointer-y) * 10deg));
 
         background: var(--surface-hover);
         border-color: var(--text-muted);
@@ -911,24 +909,25 @@
           currentX += (targetX - currentX) * 0.05;
           currentY += (targetY - currentY) * 0.05;
 
-          const sX = 6 + currentX * 5;
-          const sY = 6 + currentY * 5;
+          // Inverted signs for all calculations to fulfill the "invert" request
+          const sX = 6 + -currentX * 5;
+          const sY = 6 + -currentY * 5;
 
-          // Inject mouse coordinates for CSS calculations (used by button hover)
-          container.style.setProperty("--pointer-x", currentX);
-          container.style.setProperty("--pointer-y", currentY);
+          // Inverting coordinates injected into CSS variables
+          container.style.setProperty("--pointer-x", -currentX);
+          container.style.setProperty("--pointer-y", -currentY);
 
           document.documentElement.style.setProperty("--shadow-x", `${sX}px`);
           document.documentElement.style.setProperty("--shadow-y", `${sY}px`);
 
-          // FOREGROUND: Standard Tilt
-          container.style.transform = `perspective(1000px) scale(1.1) rotateY(${currentX * 8}deg) rotateX(${-currentY * 14}deg)`;
+          // FOREGROUND: Inverted Tilt
+          container.style.transform = `perspective(1000px) scale(1.1) rotateY(${-currentX * 8}deg) rotateX(${currentY * 14}deg)`;
 
-          // BACKGROUND: Inverted Translation (Moves WITH cursor)
-          bgLayer.style.transform = `translate(${currentX * 15}px, ${currentY * 15}px) scale(1.1)`;
+          // BACKGROUND: Inverted Translation (Matches container direction)
+          bgLayer.style.transform = `translate(${-currentX * 15}px, ${-currentY * 15}px) scale(1.1)`;
 
-          // GRID: Matches BG direction
-          grid.style.transform = `translate(${currentX * 15}px, ${currentY * 15}px)`;
+          // GRID: Matches inverted BG direction
+          grid.style.transform = `translate(${-currentX * 15}px, ${-currentY * 15}px)`;
 
           requestAnimationFrame(animate);
         };
