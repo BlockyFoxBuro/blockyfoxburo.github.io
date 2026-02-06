@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>blockyfoxburo</title>
 
-    <!-- Google Analytics -->
     <script
       async
       src="https://www.googletagmanager.com/gtag/js?id=G-9E5SZF1TFE"
@@ -19,7 +18,6 @@
       gtag("config", "G-9E5SZF1TFE");
     </script>
 
-    <!-- Minecraftia Font Import -->
     <link href="https://fonts.cdnfonts.com/css/minecraftia" rel="stylesheet" />
     <link
       rel="stylesheet"
@@ -543,9 +541,7 @@
       <i class="fa-solid fa-eye"></i> <span id="views">82</span>
     </div>
 
-    <div class="container" id="app">
-      <!-- JS injection target -->
-    </div>
+    <div class="container" id="app"></div>
 
     <script>
       const DISCORD_ID = "321617481766535169";
@@ -897,55 +893,71 @@
         const grid = document.getElementById("grid-bg");
 
         let currentX = 0,
-          currentY = 0,
-          targetX = 0,
+          currentY = 0;
+        let targetX = 0,
           targetY = 0;
+
+        // calibration offsets
+        let initialBeta = null;
+        let initialGamma = null;
+
         window.addEventListener("mousemove", (e) => {
           targetX = (e.clientX / window.innerWidth) * 2 - 1;
           targetY = (e.clientY / window.innerHeight) * 2 - 1;
         });
+
         if (window.DeviceOrientationEvent) {
           window.addEventListener("deviceorientation", (e) => {
             isGyro = true;
-            // Mobile Sensitivity normalization
-            targetX = Math.min(Math.max(e.gamma, -45), 45) / 45;
-            targetY = Math.min(Math.max(e.beta, -45), 45) / 45;
+
+            // sanitize inputs to avoid NaNs
+            const beta = e.beta || 0;
+            const gamma = e.gamma || 0;
+
+            // set the initial offset on the first valid frame
+            if (initialBeta === null) {
+              initialBeta = beta;
+              initialGamma = gamma;
+            }
+
+            // calculate delta from the starting position
+            // this handles "remember starting position"
+            const deltaGamma = gamma - initialGamma;
+            const deltaBeta = beta - initialBeta;
+
+            // clamp values to prevent wild spinning
+            targetX = Math.min(Math.max(deltaGamma, -45), 45) / 45;
+            targetY = Math.min(Math.max(deltaBeta, -45), 45) / 45;
           });
         }
+
         const animate = () => {
           currentX += (targetX - currentX) * 0.05;
           currentY += (targetY - currentY) * 0.05;
 
-          // Multiplier for inversion logic
-          // Invert every vector if on mobile gyro and in vertical/portrait mode
+          // invert logic for vertical mobile usage
           const isVertical = window.innerHeight > window.innerWidth;
           const m = isGyro && isVertical ? -1 : 1;
 
-          // Final processed coordinates
           const finalX = m * currentX;
           const finalY = m * currentY;
 
-          // Inverting coordinates injected into CSS variables for buttons
           container.style.setProperty("--pointer-x", -finalX);
           container.style.setProperty("--pointer-y", -finalY);
 
-          // Shadow Logic: top-left light fixed, shadow reacts to final tilt
           const sX = 6 + finalX * -5;
           const sY = 6 + finalY * -5;
           document.documentElement.style.setProperty("--shadow-x", `${sX}px`);
           document.documentElement.style.setProperty("--shadow-y", `${sY}px`);
 
-          // FOREGROUND: Tilt
           container.style.transform = `perspective(1000px) scale(1.1) rotateY(${-finalX * 8}deg) rotateX(${finalY * 14}deg)`;
-
-          // BACKGROUND: Moves WITH cursor logic (which is inverted by 'm' on mobile)
           bgLayer.style.transform = `translate(${finalX * 15}px, ${finalY * 15}px) scale(1.1)`;
-
-          // GRID: Matches BG direction
           grid.style.transform = `translate(${finalX * 15}px, ${finalY * 15}px)`;
 
           requestAnimationFrame(animate);
         };
+
+        // start loop
         animate();
       };
 
