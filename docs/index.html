@@ -36,22 +36,13 @@
         --accent: #d97706;
 
         --transition: cubic-bezier(0.25, 1, 0.5, 1);
-        --steam-transition: cubic-bezier(
-          0.175,
-          0.885,
-          0.32,
-          1.275
-        ); /* Bouncy pop */
+        --steam-transition: cubic-bezier(0.175, 0.885, 0.32, 1.275);
 
         --online: #22c55e;
         --idle: #eab308;
         --dnd: #ef4444;
         --offline: #78716c;
 
-        --discord-pill: rgba(0, 0, 0, 0.3);
-        --discord-pill-border: rgba(255, 255, 255, 0.1);
-
-        /* Dynamic Shadow Variables - Light Top Left = Shadow Bottom Right (Positive) */
         --shadow-x: 6px;
         --shadow-y: 6px;
         --shadow-paper: var(--shadow-x) var(--shadow-y) 0px rgba(0, 0, 0, 0.35);
@@ -76,7 +67,6 @@
         overflow-y: auto;
         overflow-x: hidden;
         position: relative;
-        /* Increased padding to prevent cutoff at 1.1 scale */
         padding: 80px 0 40px 0;
       }
 
@@ -103,7 +93,7 @@
           linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
           linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
         background-size: 50px 50px;
-        z-index: -2; /* Just above paper-bg */
+        z-index: -2;
         pointer-events: none;
         will-change: transform;
         opacity: 0.3;
@@ -115,7 +105,6 @@
         left: 0;
         width: 100%;
         height: 100%;
-        /* 5% opacity vignette */
         background: radial-gradient(
           circle,
           transparent 40%,
@@ -139,14 +128,13 @@
         margin: 0 auto;
       }
 
-      /* --- QUICK ACCESS TOP ROW --- */
+      /* --- QUICK ACCESS --- */
       .quick-access-bar {
         display: flex;
         justify-content: center;
         gap: 24px;
         padding-bottom: 12px;
       }
-
       .qa-icon {
         font-size: 1.4rem;
         color: var(--text-muted);
@@ -156,20 +144,18 @@
         display: grid;
         place-items: center;
       }
-
       .qa-icon svg {
         width: 1.2em;
         height: 1.2em;
         fill: currentColor;
       }
-
       .qa-icon:hover {
         color: var(--highlight);
         transform: translateY(-2px);
         text-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
       }
 
-      /* Organic Divider */
+      /* Divider */
       .divider {
         height: 2px;
         background: var(--border);
@@ -185,14 +171,12 @@
         transform: translateZ(30px);
         text-shadow: 2px 2px 0px rgba(0, 0, 0, 0.5);
       }
-
       .main-pfp-wrapper {
         position: relative;
         width: 100px;
         height: 100px;
         margin: 0 auto 12px auto;
       }
-
       .main-pfp {
         width: 100%;
         height: 100%;
@@ -200,7 +184,6 @@
         border: 3px solid var(--text-main);
         box-shadow: var(--shadow-paper);
       }
-
       .main-username {
         font-size: 2rem;
         font-weight: 400;
@@ -209,7 +192,6 @@
         margin-bottom: 4px;
         font-family: "Minecraftia", sans-serif;
       }
-
       .main-bio {
         color: #e7e5e4;
         font-size: 0.95rem;
@@ -222,19 +204,22 @@
         backdrop-filter: blur(8px);
         border: 1px solid var(--border);
         padding: 20px;
-        padding-bottom: 24px;
+        /* Dynamic padding-bottom managed via .active class */
         display: flex;
         flex-direction: column;
-        gap: 12px;
+        /* removed gap to allow collapsing */
         transform: translateZ(20px);
         box-shadow: var(--shadow-paper);
         transition:
+          padding-bottom 0.3s ease,
           border-color 0.2s,
           background 0.2s;
         position: relative;
         margin-top: 8px;
       }
-
+      .discord-widget.active {
+        padding-bottom: 36px; /* Space for the arrow */
+      }
       .discord-widget:hover {
         background: var(--surface-hover);
         border-color: var(--text-muted);
@@ -245,14 +230,12 @@
         align-items: center;
         gap: 16px;
       }
-
       .widget-pfp-container {
         position: relative;
         width: 56px;
         height: 56px;
         flex-shrink: 0;
       }
-
       .widget-pfp {
         width: 100%;
         height: 100%;
@@ -260,7 +243,6 @@
         object-fit: cover;
         border: 2px solid rgba(255, 255, 255, 0.1);
       }
-
       .widget-decoration {
         position: absolute;
         top: -12%;
@@ -270,7 +252,6 @@
         pointer-events: none;
         z-index: 2;
       }
-
       .widget-status-dot {
         position: absolute;
         bottom: -2px;
@@ -282,27 +263,17 @@
         border-radius: 50%;
         z-index: 3;
       }
-
       .widget-user-details {
         display: flex;
         flex-direction: column;
         gap: 2px;
         flex: 1;
       }
-
-      .name-row {
-        display: flex;
-        align-items: center;
-        flex-wrap: wrap;
-        gap: 6px;
-      }
-
       .widget-username {
         font-size: 1.1rem;
         font-weight: 700;
         color: var(--highlight);
       }
-
       .custom-status-row {
         display: flex;
         align-items: center;
@@ -312,7 +283,6 @@
         margin-top: 2px;
         font-weight: 500;
       }
-
       .emoji-img {
         width: 16px;
         height: 16px;
@@ -323,11 +293,33 @@
         height: 2px;
         background: var(--border);
         width: 100%;
-        margin: 4px 0;
-        display: none;
+        margin: 4px 0 12px 0;
+        display: block;
         border-radius: 2px;
+        opacity: 0.5;
       }
 
+      /* Activity Animation Container */
+      .activity-wrapper {
+        transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+        max-height: 500px; /* Open state */
+        opacity: 1;
+        transform: scaleY(1);
+        transform-origin: top;
+        overflow: hidden;
+        margin-top: 12px; /* Margin acts as gap */
+      }
+
+      .activity-wrapper.collapsed {
+        max-height: 0;
+        opacity: 0;
+        transform: scaleY(0.95);
+        margin-top: 0; /* Remove margin when collapsed */
+        padding: 0;
+        border: none;
+      }
+
+      /* Game / Activity Section */
       .activity-section {
         background: rgba(0, 0, 0, 0.2);
         border-radius: 4px;
@@ -336,39 +328,19 @@
         gap: 12px;
         align-items: center;
         position: relative;
-        transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
         border: 1px solid var(--border);
-
-        /* Animation properties for open state */
-        max-height: 200px; /* Arbitrary large height */
-        opacity: 1;
-        overflow: hidden;
-        margin-top: 0;
       }
-
-      .activity-section.collapsed {
-        /* Animate to closed state */
-        max-height: 0;
-        opacity: 0;
-        padding-top: 0;
-        padding-bottom: 0;
-        border-color: transparent;
-        margin-top: 0;
-      }
-
       .activity-image-wrapper {
         position: relative;
         width: 60px;
         height: 60px;
       }
-
       .activity-large-image {
         width: 100%;
         height: 100%;
         border-radius: 6px;
         object-fit: cover;
       }
-
       .activity-small-image {
         position: absolute;
         bottom: -4px;
@@ -378,7 +350,6 @@
         border-radius: 50%;
         border: 3px solid #292524;
       }
-
       .activity-info {
         display: flex;
         flex-direction: column;
@@ -386,13 +357,11 @@
         overflow: hidden;
         flex: 1;
       }
-
       .activity-name {
         font-weight: 700;
         color: var(--highlight);
         font-size: 0.9rem;
       }
-
       .activity-details,
       .activity-state {
         font-size: 0.8rem;
@@ -401,7 +370,6 @@
         overflow: hidden;
         text-overflow: ellipsis;
       }
-
       .activity-timer {
         font-size: 0.8rem;
         color: var(--text-main);
@@ -409,44 +377,153 @@
         font-variant-numeric: tabular-nums;
       }
 
-      .empty-state {
+      /* Spotify Specific */
+      .spotify-container {
         display: flex;
-        justify-content: center;
-        align-items: center;
-        padding: 12px 0;
+        flex-direction: column;
+        gap: 12px;
+        width: 100%;
+      }
+      .spotify-header {
+        font-size: 0.7rem;
+        font-weight: 700;
         color: var(--text-muted);
-        font-size: 0.85rem;
-        font-style: italic;
-        font-weight: 500;
-        display: none;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        margin-bottom: 2px;
+      }
+      .spotify-header i {
+        color: var(--text-muted);
       }
 
+      .spotify-body {
+        display: flex;
+        gap: 12px;
+        align-items: center;
+      }
+      .spotify-art-link {
+        display: block;
+        position: relative;
+        width: 60px;
+        height: 60px;
+        flex-shrink: 0;
+        transition: transform 0.2s;
+      }
+      .spotify-art-link:hover {
+        transform: scale(1.05);
+      }
+      .spotify-art {
+        width: 100%;
+        height: 100%;
+        border-radius: 6px;
+        object-fit: cover;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+      }
+
+      .spotify-info {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        overflow: hidden;
+        flex: 1;
+        gap: 2px;
+      }
+      .spotify-title {
+        font-weight: 700;
+        font-size: 0.95rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .spotify-link {
+        color: var(--highlight);
+        text-decoration: none;
+        position: relative;
+      }
+      .spotify-link:hover {
+        text-decoration: underline;
+      }
+
+      .spotify-sub-info {
+        font-size: 0.85rem;
+        color: var(--text-muted);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .sub-link {
+        color: var(--text-muted);
+        text-decoration: none;
+        transition: color 0.2s;
+      }
+      .sub-link:hover {
+        color: var(--text-main);
+        text-decoration: underline;
+      }
+
+      .spotify-progress-container {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        margin-top: 4px;
+      }
+      .spotify-bar-bg {
+        width: 100%;
+        height: 4px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 2px;
+        overflow: hidden;
+      }
+      .spotify-bar-fill {
+        height: 100%;
+        background: var(--text-main);
+        border-radius: 2px;
+        width: 0%;
+        min-width: 0px;
+        transition: width 1s linear;
+      }
+      .spotify-timestamps {
+        display: flex;
+        justify-content: space-between;
+        font-size: 0.7rem;
+        font-family: monospace;
+        color: var(--text-muted);
+      }
+
+      /* Toggle Button */
       .toggle-btn {
         position: absolute;
-        bottom: 4px;
+        bottom: 6px;
         left: 50%;
         transform: translateX(-50%);
         color: var(--text-muted);
         cursor: pointer;
         width: 40px;
         height: 20px;
-        display: grid;
+        display: none;
         place-items: center;
         border-radius: 4px;
         transition: all 0.2s;
         font-size: 0.8rem;
+        opacity: 0;
       }
-
+      .toggle-btn.visible {
+        display: grid;
+        opacity: 1;
+      }
       .toggle-btn:hover {
         color: var(--accent);
         background: rgba(255, 255, 255, 0.05);
       }
-
       .toggle-btn.rotated i {
         transform: rotate(180deg);
       }
 
-      /* --- FLAT LINK ROWS (Status-like) --- */
+      /* --- LINK ROWS --- */
       .link-row {
         display: flex;
         align-items: center;
@@ -456,41 +533,26 @@
         backdrop-filter: blur(6px);
         border: 1px solid var(--border);
         text-decoration: none;
-        /* Transition for smooth scaling/rotate */
         transition: all 0.3s var(--steam-transition);
-
-        /* BASE STATE: 
-               - Apply random organic rotation via var
-               - Substituted calculations to align with inverted logic
-            */
         transform: rotate(var(--organic-rot, 0deg)) translateZ(0)
           translateX(calc(var(--pointer-x) * 10px))
           translateY(calc(var(--pointer-y) * 10px));
-
         box-shadow: var(--shadow-paper);
         position: relative;
         z-index: 1;
-        /* Allow individual rotation override */
         transform-style: preserve-3d;
       }
-
       .link-row:hover {
-        /* HOVER STATE:
-               - Signs in calc reversed to match inverted parallax request
-               - Scale: 1.06 (Reduced from 1.25 to ~1/4 intensity)
-            */
         transform: scale(1.06) rotate(var(--organic-rot, 0deg)) translateZ(30px)
           translateX(calc(var(--pointer-x) * 15px))
           translateY(calc(var(--pointer-y) * 15px))
           rotateY(calc(var(--pointer-x) * -10deg))
           rotateX(calc(var(--pointer-y) * 10deg));
-
         background: var(--surface-hover);
         border-color: var(--text-muted);
         z-index: 100;
         box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
       }
-
       .link-icon {
         font-size: 1.4rem;
         color: var(--text-muted);
@@ -498,30 +560,25 @@
         display: grid;
         place-items: center;
       }
-
       .link-icon svg {
         width: 1.1em;
         height: 1.1em;
         fill: currentColor;
       }
-
       .link-row:hover .link-icon {
         color: var(--accent);
       }
-
       .link-info {
         display: flex;
         flex-direction: column;
         gap: 2px;
       }
-
       .link-label {
         font-size: 0.95rem;
         font-weight: 700;
         color: var(--highlight);
         font-family: "Courier New", monospace;
       }
-
       .link-desc {
         font-size: 0.8rem;
         color: var(--text-muted);
@@ -545,9 +602,12 @@
 
     <script>
       const DISCORD_ID = "321617481766535169";
-
-      let elapsedInterval;
       let isGyro = false;
+
+      // State tracking
+      let lastActivityType = null; // 'spotify', 'game', 'none'
+      let lastTrackId = null;
+      let startTimestamp = null;
 
       const linksData = [
         {
@@ -585,15 +645,13 @@
           linkText: "initiate handshake",
         },
       ];
-      // Softer/wider organic generation - Now returns CSS Variable string
+
       const generateOrganicStyle = () => {
         const r1 = Math.floor(10 + Math.random() * 8);
         const r2 = Math.floor(10 + Math.random() * 8);
         const r3 = Math.floor(10 + Math.random() * 8);
         const r4 = Math.floor(10 + Math.random() * 8);
         const rot = (Math.random() * 1.5 - 0.75).toFixed(2);
-
-        // Set radius directly, set rotation as variable for transform composition
         return `border-radius: ${r1}px ${r2}px ${r3}px ${r4}px; --organic-rot: ${rot}deg;`;
       };
 
@@ -602,7 +660,6 @@
           `https://lanyard.cnrad.dev/api/v1/users/${DISCORD_ID}`,
           `https://api.lanyard.rest/v1/users/${DISCORD_ID}`,
         ];
-
         for (const url of endpoints) {
           try {
             const response = await fetch(url);
@@ -620,10 +677,8 @@
         const seconds = Math.floor((ms / 1000) % 60);
         const minutes = Math.floor((ms / (1000 * 60)) % 60);
         const hours = Math.floor((ms / (1000 * 60 * 60)) % 24);
-
         const s = seconds < 10 ? "0" + seconds : seconds;
         const m = minutes < 10 ? "0" + minutes : minutes;
-
         if (hours > 0) {
           const h = hours < 10 ? "0" + hours : hours;
           return `${h}:${m}:${s}`;
@@ -631,140 +686,30 @@
         return `${m}:${s}`;
       };
 
-      const renderApp = async () => {
+      // 1. RENDER STATIC STRUCTURE ONCE
+      const initStructure = () => {
         const app = document.getElementById("app");
-        const discordData = await fetchDiscordProfile();
+        app.innerHTML = "";
 
-        let pfp = "https://cdn.discordapp.com/embed/avatars/0.png";
-        let username = "blockyfoxburo";
-        let statusColor = "var(--offline)";
-        let decorationHTML = "";
-        let customStatusHTML = "";
-        let activityHTML = "";
-        let showActivityToggle = false;
-        let startTimestamp = null;
-        let showEmptyState = true;
-
-        if (discordData) {
-          const user = discordData.discord_user;
-
-          if (user.avatar) {
-            pfp = `https://cdn.discordapp.com/avatars/${DISCORD_ID}/${user.avatar}.png`;
-          }
-          if (user.avatar_decoration_data) {
-            const decAsset = user.avatar_decoration_data.asset;
-            const decorationUrl = `https://cdn.discordapp.com/avatar-decoration-presets/${decAsset}.png`;
-            decorationHTML = `<img src="${decorationUrl}" class="widget-decoration" alt="decoration">`;
-          }
-
-          username = user.global_name || user.username;
-
-          switch (discordData.discord_status) {
-            case "online":
-              statusColor = "var(--online)";
-              break;
-            case "idle":
-              statusColor = "var(--idle)";
-              break;
-            case "dnd":
-              statusColor = "var(--dnd)";
-              break;
-            default:
-              statusColor = "var(--offline)";
-          }
-
-          const custom = discordData.activities.find((a) => a.type === 4);
-          if (custom && custom.state) {
-            let emojiHTML = "";
-            if (custom.emoji) {
-              if (custom.emoji.id) {
-                emojiHTML = `<img src="https://cdn.discordapp.com/emojis/${custom.emoji.id}.png" class="emoji-img">`;
-              } else if (custom.emoji.name) {
-                emojiHTML = `<span>${custom.emoji.name}</span>`;
-              }
-            }
-            customStatusHTML = `
-                        <div class="custom-status-row">
-                            ${emojiHTML}
-                            <span>${custom.state}</span>
-                        </div>
-                    `;
-          }
-
-          const game = discordData.activities.find((a) => a.type === 0);
-          if (game) {
-            showActivityToggle = true;
-            showEmptyState = false;
-
-            let largeImage =
-              "https://raw.githubusercontent.com/suyashtnt/discord-resources/master/Images/unknown_app.png";
-            let smallImage = "";
-
-            if (game.assets) {
-              if (game.assets.large_image) {
-                if (game.assets.large_image.startsWith("mp:")) {
-                  largeImage = `https://media.discordapp.net/${game.assets.large_image.replace("mp:", "")}`;
-                } else {
-                  largeImage = `https://cdn.discordapp.com/app-assets/${game.application_id}/${game.assets.large_image}.png`;
-                }
-              }
-              if (game.assets.small_image) {
-                let smallUrl = "";
-                if (game.assets.small_image.startsWith("mp:")) {
-                  smallUrl = `https://media.discordapp.net/${game.assets.small_image.replace("mp:", "")}`;
-                } else {
-                  smallUrl = `https://cdn.discordapp.com/app-assets/${game.application_id}/${game.assets.small_image}.png`;
-                }
-                smallImage = `<img src="${smallUrl}" class="activity-small-image">`;
-              }
-            }
-
-            let timerHTML = "";
-            if (game.timestamps && game.timestamps.start) {
-              startTimestamp = game.timestamps.start;
-              timerHTML = `<div class="activity-timer" id="activity-timer">00:00</div>`;
-            }
-
-            activityHTML = `
-                        <div class="activity-section" id="activity-box">
-                            <div class="activity-image-wrapper">
-                                <img src="${largeImage}" class="activity-large-image">
-                                ${smallImage}
-                            </div>
-                            <div class="activity-info">
-                                <div class="activity-name">${game.name}</div>
-                                <div class="activity-details">${game.details || ""}</div>
-                                <div class="activity-state">${game.state || ""}</div>
-                                ${timerHTML}
-                            </div>
-                        </div>
-                    `;
-          }
-        }
-
-        // --- RENDER ORDER: Profile -> Icons -> Divider -> DC -> Buttons ---
-
-        // 1. Profile
+        // Profile
         const mainProfile = document.createElement("div");
         mainProfile.className = "main-profile";
         mainProfile.innerHTML = `
-                <div class="main-pfp-wrapper">
-                    <img src="${pfp}" class="main-pfp" style="${generateOrganicStyle()}">
-                </div>
-                <div class="main-username">BlockyFoxBuro</div>
-                <div class="main-bio">a yellow dragon</div>
-            `;
+            <div class="main-pfp-wrapper">
+                <img id="static-pfp" src="https://cdn.discordapp.com/embed/avatars/0.png" class="main-pfp" style="${generateOrganicStyle()}">
+            </div>
+            <div class="main-username">BlockyFoxBuro</div>
+            <div class="main-bio">a yellow dragon</div>
+        `;
         app.appendChild(mainProfile);
 
-        // 2. Quick Access Row (Icons)
+        // Quick Access
         const qaBar = document.createElement("div");
         qaBar.className = "quick-access-bar";
-
         linksData.forEach((item) => {
           const a = document.createElement("a");
           a.className = "qa-icon";
           a.innerHTML = `<i class="${item.icon}"></i>`;
-
           if (item.isEmail) {
             a.href = "javascript:void(0)";
             a.onclick = () => {
@@ -778,93 +723,66 @@
         });
         app.appendChild(qaBar);
 
-        // 3. Divider
+        // Divider
         const divider = document.createElement("div");
         divider.className = "divider";
         divider.style.clipPath = `polygon(0% 45%, 15% 55%, 30% 45%, 45% 55%, 60% 45%, 75% 55%, 90% 45%, 100% 55%, 100% 100%, 0% 100%)`;
         app.appendChild(divider);
 
-        // 4. Discord Widget (NOW HERE - Before Buttons)
+        // Widget Container - ADDED ID
         const widget = document.createElement("div");
         widget.className = "discord-widget";
+        widget.id = "discord-widget";
         widget.style.cssText = generateOrganicStyle();
 
-        let toggleBtnHTML = "";
-        let emptyStateHTML = "";
-        let widgetDividerHTML = "";
-
-        if (showActivityToggle) {
-          toggleBtnHTML = `<div class="toggle-btn" id="toggle-activity"><i class="fa-solid fa-chevron-up"></i></div>`;
-          widgetDividerHTML = `<div class="widget-divider" style="display:block"></div>`;
-        } else if (showEmptyState) {
-          widgetDividerHTML = `<div class="widget-divider" style="display:block"></div>`;
-          emptyStateHTML = `
-                    <div class="empty-state">
-                        I'm not currently doing anything!
-                    </div>
-                `;
-        }
-
         widget.innerHTML = `
-                <div class="widget-header">
-                    <div class="widget-pfp-container">
-                        <img src="${pfp}" class="widget-pfp">
-                        ${decorationHTML}
-                        <div class="widget-status-dot" style="background: ${statusColor}"></div>
-                    </div>
-                    <div class="widget-user-details">
-                        <div class="name-row">
-                            <span class="widget-username">${username}</span>
-                        </div>
-                        ${customStatusHTML}
-                    </div>
+            <div class="widget-header">
+                <div class="widget-pfp-container">
+                    <img id="widget-pfp" src="https://cdn.discordapp.com/embed/avatars/0.png" class="widget-pfp">
+                    <div id="widget-decoration"></div>
+                    <div id="widget-status" class="widget-status-dot" style="background: var(--offline)"></div>
                 </div>
-                ${widgetDividerHTML}
-                ${activityHTML}
-                ${emptyStateHTML}
-                ${toggleBtnHTML}
-            `;
+                <div class="widget-user-details">
+                    <div class="name-row">
+                        <span id="widget-username" class="widget-username">...</span>
+                    </div>
+                    <div id="widget-custom-status"></div>
+                </div>
+            </div>
+            
+            <!-- Activity Container -->
+            <div id="activity-container" class="activity-wrapper collapsed">
+                <!-- Divider is injected here for smooth animation -->
+                <div class="widget-divider"></div>
+                <div id="activity-content"></div>
+            </div>
+            
+            <div class="toggle-btn" id="toggle-activity">
+                <i class="fa-solid fa-chevron-up"></i>
+            </div>
+        `;
         app.appendChild(widget);
 
-        // Logic for widget toggle
-        if (showActivityToggle) {
-          const btn = document.getElementById("toggle-activity");
-          const box = document.getElementById("activity-box");
-          if (btn && box) {
-            btn.onclick = (e) => {
-              e.stopPropagation();
-              const isHidden = box.classList.contains("collapsed");
-              if (isHidden) {
-                box.classList.remove("collapsed");
-                btn.classList.remove("rotated");
-              } else {
-                box.classList.add("collapsed");
-                btn.classList.add("rotated");
-              }
-            };
+        // Toggle Logic
+        const btn = document.getElementById("toggle-activity");
+        const box = document.getElementById("activity-container");
+        btn.onclick = (e) => {
+          e.stopPropagation();
+          const isHidden = box.classList.contains("collapsed");
+          if (isHidden) {
+            box.classList.remove("collapsed");
+            btn.classList.remove("rotated");
+          } else {
+            box.classList.add("collapsed");
+            btn.classList.add("rotated");
           }
+        };
 
-          if (startTimestamp) {
-            const timerEl = document.getElementById("activity-timer");
-            if (timerEl) {
-              if (elapsedInterval) clearInterval(elapsedInterval);
-              const updateTimer = () => {
-                const now = Date.now();
-                const diff = now - startTimestamp;
-                timerEl.textContent = formatTime(diff);
-              };
-              updateTimer();
-              elapsedInterval = setInterval(updateTimer, 1000);
-            }
-          }
-        }
-
-        // 5. Flat Links (Buttons - NOW AT BOTTOM)
+        // Links
         linksData.forEach((item) => {
           const row = document.createElement("a");
           row.className = "link-row";
           row.style.cssText = generateOrganicStyle();
-
           if (item.isEmail) {
             row.href = "javascript:void(0)";
             row.onclick = () => {
@@ -874,17 +792,240 @@
             row.href = item.link;
             row.target = "_blank";
           }
-
           row.innerHTML = `
-                    <div class="link-icon"><i class="${item.icon}"></i></div>
-                    <div class="link-info">
-                        <div class="link-label">${item.label}</div>
-                        <div class="link-desc">${item.desc}</div>
-                    </div>
-                `;
-
+                <div class="link-icon"><i class="${item.icon}"></i></div>
+                <div class="link-info">
+                    <div class="link-label">${item.label}</div>
+                    <div class="link-desc">${item.desc}</div>
+                </div>
+            `;
           app.appendChild(row);
         });
+      };
+
+      // 2. UPDATE LOGIC (Runs every 1s)
+      const updateWidget = async () => {
+        const discordData = await fetchDiscordProfile();
+        if (!discordData) return;
+
+        const user = discordData.discord_user;
+        const DISCORD_ID = "321617481766535169";
+
+        // Update Profile
+        let pfp = "https://cdn.discordapp.com/embed/avatars/0.png";
+        if (user.avatar)
+          pfp = `https://cdn.discordapp.com/avatars/${DISCORD_ID}/${user.avatar}.png`;
+
+        const staticPfp = document.getElementById("static-pfp");
+        const widgetPfp = document.getElementById("widget-pfp");
+        if (staticPfp.src !== pfp) staticPfp.src = pfp;
+        if (widgetPfp.src !== pfp) widgetPfp.src = pfp;
+
+        const usernameEl = document.getElementById("widget-username");
+        const newName = user.global_name || user.username;
+        if (usernameEl.textContent !== newName)
+          usernameEl.textContent = newName;
+
+        const decoContainer = document.getElementById("widget-decoration");
+        if (user.avatar_decoration_data) {
+          const decAsset = user.avatar_decoration_data.asset;
+          const decUrl = `https://cdn.discordapp.com/avatar-decoration-presets/${decAsset}.png`;
+          if (!decoContainer.innerHTML.includes(decAsset)) {
+            decoContainer.innerHTML = `<img src="${decUrl}" class="widget-decoration" alt="decoration">`;
+          }
+        } else {
+          decoContainer.innerHTML = "";
+        }
+
+        // Status
+        let statusColor = "var(--offline)";
+        switch (discordData.discord_status) {
+          case "online":
+            statusColor = "var(--online)";
+            break;
+          case "idle":
+            statusColor = "var(--idle)";
+            break;
+          case "dnd":
+            statusColor = "var(--dnd)";
+            break;
+          default:
+            statusColor = "var(--offline)";
+        }
+        document.getElementById("widget-status").style.background = statusColor;
+
+        // Custom Status
+        const custom = discordData.activities.find((a) => a.type === 4);
+        const customContainer = document.getElementById("widget-custom-status");
+        let customHTML = "";
+        if (custom && custom.state) {
+          let emojiHTML = "";
+          if (custom.emoji) {
+            if (custom.emoji.id)
+              emojiHTML = `<img src="https://cdn.discordapp.com/emojis/${custom.emoji.id}.png" class="emoji-img">`;
+            else if (custom.emoji.name)
+              emojiHTML = `<span>${custom.emoji.name}</span>`;
+          }
+          customHTML = `<div class="custom-status-row">${emojiHTML}<span>${custom.state}</span></div>`;
+        }
+        if (customContainer.innerHTML !== customHTML)
+          customContainer.innerHTML = customHTML;
+
+        // --- ACTIVITY LOGIC ---
+        const activityContainer = document.getElementById("activity-container");
+        const activityContent = document.getElementById("activity-content");
+        const toggleBtn = document.getElementById("toggle-activity");
+        const widgetElement = document.getElementById("discord-widget");
+
+        // Check Spotify
+        if (discordData.listening_to_spotify && discordData.spotify) {
+          const spot = discordData.spotify;
+
+          // If switched to spotify or song changed
+          if (lastActivityType !== "spotify" || lastTrackId !== spot.track_id) {
+            // If transitioning from NONE, animate OPEN
+            if (lastActivityType === "none") {
+              activityContainer.classList.remove("collapsed");
+              toggleBtn.classList.add("visible");
+              toggleBtn.classList.remove("rotated");
+              // Add padding class
+              widgetElement.classList.add("active");
+            }
+
+            lastActivityType = "spotify";
+            lastTrackId = spot.track_id;
+
+            const trackUrl = `https://open.spotify.com/track/${spot.track_id}`;
+            const albumSearchUrl = `https://open.spotify.com/search/${encodeURIComponent(spot.album)}`;
+            const artistLinks = spot.artist
+              .split(";")
+              .map((artist) => {
+                const trimmed = artist.trim();
+                const searchUrl = `https://open.spotify.com/search/${encodeURIComponent(trimmed)}`;
+                return `<a href="${searchUrl}" target="_blank" class="sub-link">${trimmed}</a>`;
+              })
+              .join(", ");
+
+            const totalDuration = spot.timestamps.end - spot.timestamps.start;
+
+            activityContent.innerHTML = `
+                    <div class="spotify-container">
+                        <div class="spotify-header">
+                            <i class="fa-brands fa-spotify"></i> Listening to Spotify
+                        </div>
+                        <div class="spotify-body">
+                            <a href="${trackUrl}" target="_blank" class="spotify-art-link">
+                                <img src="${spot.album_art_url}" class="spotify-art">
+                            </a>
+                            <div class="spotify-info">
+                                <div class="spotify-title">
+                                    <a href="${trackUrl}" target="_blank" class="spotify-link">${spot.song}</a>
+                                </div>
+                                <div class="spotify-sub-info">by ${artistLinks}</div>
+                                <div class="spotify-sub-info">
+                                    on <a href="${albumSearchUrl}" target="_blank" class="sub-link">${spot.album}</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="spotify-progress-container">
+                            <div class="spotify-bar-bg">
+                                <div class="spotify-bar-fill" id="spot-fill"></div>
+                            </div>
+                            <div class="spotify-timestamps">
+                                <span id="spot-curr">00:00</span>
+                                <span>${formatTime(totalDuration)}</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+          }
+
+          // Always Update Progress
+          const fill = document.getElementById("spot-fill");
+          const curr = document.getElementById("spot-curr");
+          if (fill && curr) {
+            const now = Date.now();
+            const total = spot.timestamps.end - spot.timestamps.start;
+            const current = now - spot.timestamps.start;
+            const pct = Math.min((current / total) * 100, 100);
+            fill.style.width = `${pct}%`;
+            curr.textContent = formatTime(Math.max(current, 0));
+          }
+        } else {
+          // Check Game
+          const game = discordData.activities.find((a) => a.type === 0);
+          if (game) {
+            if (lastActivityType !== "game" || lastTrackId !== game.name) {
+              // If transitioning from NONE, animate OPEN
+              if (lastActivityType === "none") {
+                activityContainer.classList.remove("collapsed");
+                toggleBtn.classList.add("visible");
+                toggleBtn.classList.remove("rotated");
+                // Add padding class
+                widgetElement.classList.add("active");
+              }
+
+              lastActivityType = "game";
+              lastTrackId = game.name;
+              startTimestamp = game.timestamps ? game.timestamps.start : null;
+
+              let largeImage =
+                "https://raw.githubusercontent.com/suyashtnt/discord-resources/master/Images/unknown_app.png";
+              let smallImage = "";
+
+              if (game.assets) {
+                if (game.assets.large_image) {
+                  largeImage = game.assets.large_image.startsWith("mp:")
+                    ? `https://media.discordapp.net/${game.assets.large_image.replace("mp:", "")}`
+                    : `https://cdn.discordapp.com/app-assets/${game.application_id}/${game.assets.large_image}.png`;
+                }
+                if (game.assets.small_image) {
+                  const sUrl = game.assets.small_image.startsWith("mp:")
+                    ? `https://media.discordapp.net/${game.assets.small_image.replace("mp:", "")}`
+                    : `https://cdn.discordapp.com/app-assets/${game.application_id}/${game.assets.small_image}.png`;
+                  smallImage = `<img src="${sUrl}" class="activity-small-image">`;
+                }
+              }
+
+              activityContent.innerHTML = `
+                        <div class="activity-section">
+                            <div class="activity-image-wrapper">
+                                <img src="${largeImage}" class="activity-large-image">
+                                ${smallImage}
+                            </div>
+                            <div class="activity-info">
+                                <div class="activity-name">${game.name}</div>
+                                <div class="activity-details">${game.details || ""}</div>
+                                <div class="activity-state">${game.state || ""}</div>
+                                ${startTimestamp ? `<div class="activity-timer" id="game-timer">00:00</div>` : ""}
+                            </div>
+                        </div>
+                    `;
+            }
+
+            // Update Game Timer
+            if (startTimestamp) {
+              const timerEl = document.getElementById("game-timer");
+              if (timerEl) {
+                timerEl.textContent = formatTime(Date.now() - startTimestamp);
+              }
+            }
+          } else {
+            // Nothing playing - COLLAPSE EVERYTHING
+            if (lastActivityType !== "none") {
+              lastActivityType = "none";
+              lastTrackId = null;
+
+              // Animate Closed
+              activityContainer.classList.add("collapsed");
+              toggleBtn.classList.remove("visible");
+              // Remove padding class
+              widgetElement.classList.remove("active");
+
+              // Clear innerHTML after animation (optional, but cleaner to leave it until next update replaces it)
+            }
+          }
+        }
       };
 
       const initParallax = () => {
@@ -896,10 +1037,8 @@
           currentY = 0;
         let targetX = 0,
           targetY = 0;
-
-        // calibration offsets
-        let initialBeta = null;
-        let initialGamma = null;
+        let initialBeta = null,
+          initialGamma = null;
 
         window.addEventListener("mousemove", (e) => {
           targetX = (e.clientX / window.innerWidth) * 2 - 1;
@@ -909,23 +1048,14 @@
         if (window.DeviceOrientationEvent) {
           window.addEventListener("deviceorientation", (e) => {
             isGyro = true;
-
-            // sanitize inputs to avoid NaNs
             const beta = e.beta || 0;
             const gamma = e.gamma || 0;
-
-            // set the initial offset on the first valid frame
             if (initialBeta === null) {
               initialBeta = beta;
               initialGamma = gamma;
             }
-
-            // calculate delta from the starting position
-            // this handles "remember starting position"
             const deltaGamma = gamma - initialGamma;
             const deltaBeta = beta - initialBeta;
-
-            // clamp values to prevent wild spinning
             targetX = Math.min(Math.max(deltaGamma, -45), 45) / 45;
             targetY = Math.min(Math.max(deltaBeta, -45), 45) / 45;
           });
@@ -934,11 +1064,8 @@
         const animate = () => {
           currentX += (targetX - currentX) * 0.05;
           currentY += (targetY - currentY) * 0.05;
-
-          // invert logic for vertical mobile usage
           const isVertical = window.innerHeight > window.innerWidth;
           const m = isGyro && isVertical ? -1 : 1;
-
           const finalX = m * currentX;
           const finalY = m * currentY;
 
@@ -956,14 +1083,14 @@
 
           requestAnimationFrame(animate);
         };
-
-        // start loop
         animate();
       };
 
       document.addEventListener("DOMContentLoaded", () => {
-        renderApp();
+        initStructure();
+        updateWidget();
         initParallax();
+        setInterval(updateWidget, 1000);
       });
     </script>
   </body>
