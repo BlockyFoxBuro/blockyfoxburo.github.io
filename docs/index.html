@@ -205,9 +205,38 @@
       }
 
       /* --- PROFILE --- */
+      .profile-banner {
+        position: relative;
+        overflow: hidden;
+        border-radius: var(--container-radius-tl) var(--container-radius-tr) var(--container-radius-br) var(--container-radius-bl);
+        aspect-ratio: 16 / 9;
+        min-height: 220px;
+        background-image: url("images/banner.png");
+        background-size: cover;
+        background-position: center;
+        box-shadow: inset 0 -80px 90px rgba(0, 0, 0, 0.55);
+      }
+
+      .profile-banner::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(180deg, rgba(0, 0, 0, 0.08) 0%, rgba(0, 0, 0, 0.5) 100%);
+        pointer-events: none;
+      }
+
       .main-profile {
+        position: relative;
+        z-index: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        height: 100%;
         text-align: center;
-        margin-bottom: 8px;
+        margin-bottom: 0;
+        padding: 24px 16px 20px;
         transform: translateZ(30px);
         text-shadow: 2px 2px 0px rgba(0, 0, 0, 0.5);
       }
@@ -565,6 +594,13 @@
       .link-row:hover .link-icon {
         color: var(--accent);
       }
+      .link-row .link-icon img {
+        filter: brightness(0.9) saturate(0.8);
+        transition: filter 0.25s var(--transition), transform 0.25s var(--transition);
+      }
+      .link-row:hover .link-icon img {
+        filter: brightness(1.1) saturate(1.1);
+      }
       .link-info {
         display: flex;
         flex-direction: column;
@@ -579,6 +615,99 @@
       .link-desc {
         font-size: 0.8rem;
         color: var(--text-muted);
+      }
+
+      .link-icon img,
+      .qa-icon img,
+      .link-svg-icon {
+        width: 1.1em;
+        height: 1.1em;
+        object-fit: contain;
+        display: block;
+        filter: brightness(0.9) saturate(0.8);
+      }
+
+      .link-row:hover .link-icon img,
+      .qa-icon:hover img,
+      .link-row:hover .link-svg-icon {
+        filter: brightness(1.1) saturate(1.1);
+      }
+
+      .more-links-wrapper {
+        position: relative;
+        width: 100%;
+        z-index: 2;
+        transition: padding-top 0.35s var(--transition);
+      }
+
+      .more-links-wrapper.expanded {
+        padding-top: 76px;
+      }
+
+      .more-links-toggle {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        margin-top: 12px;
+        padding: 8px 0 6px;
+        border: 0;
+        background: transparent;
+        color: var(--text-muted);
+        cursor: pointer;
+        transition: color 0.2s var(--transition), transform 0.2s var(--transition);
+      }
+      .more-links-toggle:hover {
+        color: var(--highlight);
+        transform: translateY(-1px);
+      }
+
+      .more-links-toggle::before {
+        content: "";
+        width: 100%;
+        height: 1px;
+        background: rgba(255, 255, 255, 0.18);
+        opacity: 1;
+      }
+
+      .more-links-toggle .arrow {
+        margin-top: 8px;
+        font-size: 0.85rem;
+        transition: transform 0.25s var(--transition), color 0.2s var(--transition);
+      }
+
+      .more-links-toggle.expanded .arrow {
+        transform: rotate(180deg);
+      }
+
+      .more-links-list {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 0;
+        z-index: 3;
+        display: grid;
+        grid-template-rows: 0fr;
+        opacity: 0;
+        overflow: hidden;
+        pointer-events: none;
+        transition: grid-template-rows 0.35s var(--transition), opacity 0.35s var(--transition);
+      }
+
+      .more-links-list.expanded {
+        grid-template-rows: 1fr;
+        opacity: 1;
+        pointer-events: auto;
+      }
+
+      .more-links-inner {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        overflow: hidden;
+        min-height: 0;
+        padding: 12px 10px 14px;
       }
 
       .view-counter {
@@ -625,6 +754,14 @@
         },
         {
           id: 3,
+          label: "roblox profile",
+          iconImage: "images/robloxicon.svg",
+          desc: "add friend me! :3",
+          link: "https://www.roblox.com/users/115424172/profile",
+          linkText: "view profile",
+        },
+        {
+          id: 4,
           label: "support_me",
           icon: "fa-solid fa-heart",
           desc: "directly support me!",
@@ -632,7 +769,7 @@
           linkText: "send credits",
         },
         {
-          id: 4,
+          id: 5,
           label: "contact_me",
           icon: "fa-solid fa-envelope",
           desc: "email me for business inquires!",
@@ -647,6 +784,16 @@
       const generateOrganicStyle = () => {
         const rot = (Math.random() * 1.5 - 0.75).toFixed(2);
         return `--organic-rot: ${rot}deg;`;
+      };
+
+      const renderLinkIcon = (item) => {
+        if (item.iconImage) {
+          if (item.label === "roblox profile") {
+            return `<svg class="link-svg-icon" width="150" height="150" viewBox="0 0 150 150" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><title>Roblox</title><g clip-path="url(#clip0_10_85)"><path d="M31.6984 0L0 118.302L118.302 150L150 31.6984L31.6984 0ZM87.1031 95.9652L54.0454 87.1031L62.9075 54.0454L95.9784 62.9075L87.1031 95.9652Z" fill="currentColor"/></g></svg>`;
+          }
+          return `<img src="${item.iconImage}" alt="${item.label}" />`;
+        }
+        return `<i class="${item.icon}"></i>`;
       };
 
       const fetchDiscordProfile = async () => {
@@ -686,6 +833,9 @@
         app.innerHTML = "";
 
         // Profile Container (Avatar, Status dot overlay, bios, and custom status merged)
+        const bannerWrapper = document.createElement("div");
+        bannerWrapper.className = "profile-banner";
+
         const mainProfile = document.createElement("div");
         mainProfile.className = "main-profile";
         mainProfile.innerHTML = `
@@ -720,7 +870,7 @@
         linksData.forEach((item) => {
           const a = document.createElement("a");
           a.className = "qa-icon";
-          a.innerHTML = `<i class="${item.icon}"></i>`;
+          a.innerHTML = renderLinkIcon(item);
           if (item.isEmail) {
             a.href = "javascript:void(0)";
             a.onclick = () => {
@@ -741,7 +891,10 @@
         app.appendChild(divider);
 
         // Links
-        linksData.forEach((item) => {
+        const visibleLinks = linksData.slice(0, 4);
+        const hiddenLinks = linksData.slice(4);
+
+        visibleLinks.forEach((item) => {
           const row = document.createElement("a");
           row.className = "link-row";
           row.style.cssText = generateOrganicStyle();
@@ -755,7 +908,7 @@
             row.target = "_blank";
           }
           row.innerHTML = `
-                <div class="link-icon"><i class="${item.icon}"></i></div>
+                <div class="link-icon">${renderLinkIcon(item)}</div>
                 <div class="link-info">
                     <div class="link-label">${item.label}</div>
                     <div class="link-desc">${item.desc}</div>
@@ -763,6 +916,60 @@
             `;
           app.appendChild(row);
         });
+
+        if (hiddenLinks.length > 0) {
+          const wrapper = document.createElement("div");
+          wrapper.className = "more-links-wrapper";
+
+          const toggle = document.createElement("button");
+          toggle.type = "button";
+          toggle.className = "more-links-toggle";
+          toggle.setAttribute("aria-label", "Toggle more links");
+          toggle.innerHTML = `<i class="fa-solid fa-chevron-down arrow" aria-hidden="true"></i>`;
+          wrapper.appendChild(toggle);
+
+          const hiddenList = document.createElement("div");
+          hiddenList.className = "more-links-list";
+          hiddenList.setAttribute("aria-hidden", "true");
+
+          const hiddenInner = document.createElement("div");
+          hiddenInner.className = "more-links-inner";
+          hiddenList.appendChild(hiddenInner);
+
+          toggle.addEventListener("click", () => {
+            const expanded = hiddenList.classList.toggle("expanded");
+            wrapper.classList.toggle("expanded", expanded);
+            toggle.classList.toggle("expanded", expanded);
+            hiddenList.setAttribute("aria-hidden", expanded ? "false" : "true");
+            toggle.setAttribute("aria-expanded", expanded ? "true" : "false");
+          });
+
+          hiddenLinks.forEach((item) => {
+            const row = document.createElement("a");
+            row.className = "link-row";
+            row.style.cssText = generateOrganicStyle();
+            if (item.isEmail) {
+              row.href = "javascript:void(0)";
+              row.onclick = () => {
+                window.location.href = `mailto:${item.u}@${item.d}`;
+              };
+            } else {
+              row.href = item.link;
+              row.target = "_blank";
+            }
+            row.innerHTML = `
+                  <div class="link-icon">${renderLinkIcon(item)}</div>
+                  <div class="link-info">
+                      <div class="link-label">${item.label}</div>
+                      <div class="link-desc">${item.desc}</div>
+                  </div>
+              `;
+            hiddenInner.appendChild(row);
+          });
+
+          wrapper.appendChild(hiddenList);
+          app.appendChild(wrapper);
+        }
       };
 
       // 2. UPDATE LOGIC (Runs every 1s)
