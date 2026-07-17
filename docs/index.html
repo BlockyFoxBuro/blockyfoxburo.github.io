@@ -26,6 +26,14 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
     />
     <style>
+      @font-face {
+        font-family: "Monocraft";
+        src: url("https://raw.githubusercontent.com/BlockyFoxBuro/blockyfoxburo.github.io/main/docs/fonts/Monocraft.ttf") format("truetype");
+        font-weight: normal;
+        font-style: normal;
+        font-display: swap;
+      }
+
       :root {
         /* Warm/Paper Palette */
         --bg-color: #0c0a09;
@@ -248,7 +256,7 @@
         letter-spacing: 0.5px;
         color: #fef3c7;
         margin-bottom: 4px;
-        font-family: "Montserrat", sans-serif;
+        font-family: "Monocraft", "Montserrat", sans-serif;
       }
       .main-bio {
         color: #e7e5e4;
@@ -564,7 +572,7 @@
         font-size: 0.95rem;
         font-weight: 700;
         color: var(--highlight);
-        font-family: "Courier New", monospace;
+        font-family: "Monocraft", "Courier New", monospace;
       }
       .link-desc {
         font-size: 0.8rem;
@@ -770,7 +778,7 @@
         if (staticPfp && staticPfp.src !== pfp) staticPfp.src = pfp;
 
         const usernameEl = document.getElementById("widget-username");
-        const newName = user.global_name || user.username;
+        const newName = "BlockyFoxBuro";
         if (usernameEl && usernameEl.textContent !== newName)
           usernameEl.textContent = newName;
 
