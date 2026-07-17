@@ -26,17 +26,10 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
     />
     <style>
-      @font-face {
-        font-family: "Monocraft";
-        src: url("https://raw.githubusercontent.com/BlockyFoxBuro/blockyfoxburo.github.io/main/docs/fonts/Monocraft.ttf") format("truetype");
-        font-weight: normal;
-        font-style: normal;
-        font-display: swap;
-      }
-
       :root {
         /* Warm/Paper Palette */
         --bg-color: #0c0a09;
+        --pfp-spin-strength: 12deg;
         --surface: rgba(28, 25, 23, 0.65);
         --surface-hover: rgba(41, 37, 36, 0.95);
         --border: rgba(255, 255, 255, 0.1);
@@ -228,6 +221,13 @@
         object-fit: cover;
         border: none;
         border-radius: 50%;
+        transition: transform 0.45s ease, box-shadow 0.3s ease;
+        transform-origin: center;
+      }
+
+      .main-pfp:hover {
+        transform: rotate(var(--pfp-spin-strength));
+        box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.15);
       }
       .widget-decoration {
         position: absolute;
@@ -256,12 +256,12 @@
         letter-spacing: 0.5px;
         color: #fef3c7;
         margin-bottom: 4px;
-        font-family: "Monocraft", "Montserrat", sans-serif;
+        font-family: "Montserrat", sans-serif;
       }
       .main-bio {
         color: #e7e5e4;
         font-size: 0.95rem;
-        font-weight: 600;
+        font-weight: 400;
       }
 
       /* --- STYLIZED PREMIUM STATUS BAR (Pill Shape) --- */
@@ -572,7 +572,7 @@
         font-size: 0.95rem;
         font-weight: 700;
         color: var(--highlight);
-        font-family: "Monocraft", "Courier New", monospace;
+        font-family: "Courier New", monospace;
       }
       .link-desc {
         font-size: 0.8rem;
@@ -688,7 +688,9 @@
         mainProfile.className = "main-profile";
         mainProfile.innerHTML = `
             <div class="main-pfp-wrapper">
-                <img id="static-pfp" src="https://cdn.discordapp.com/embed/avatars/0.png" class="main-pfp" style="${generateOrganicStyle()}">
+                <a href="https://discord.com/users/321617481766535169" target="_blank" rel="noopener noreferrer">
+                    <img id="static-pfp" src="https://cdn.discordapp.com/embed/avatars/0.png" class="main-pfp" style="${generateOrganicStyle()}">
+                </a>
                 <div id="widget-decoration"></div>
                 <div id="widget-status" class="widget-status-dot"></div>
             </div>
@@ -699,7 +701,7 @@
             
             <div class="main-bio">🐲 A yellow derg!! :3 🐲</div>
             <div class="main-bio">🍊 He/Them | Ace ♠️ | 🖤💜🤍💛󠁛󠀣󠁥󠀹󠁥󠀲󠀹󠀱󠀬󠀣󠀶󠁦󠀳󠁥</div>
-            <div class="main-bio">🔰 ~2* | 🎨 3D Artist | 🎮 Game Design Student</div>
+            <div class="main-bio">🔰 ~2* | 🎨 3D Artist | 📝 Game Design Student</div>
         `;
         app.appendChild(mainProfile);
 
