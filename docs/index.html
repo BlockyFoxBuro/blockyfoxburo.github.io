@@ -18,7 +18,9 @@
       gtag("config", "G-9E5SZF1TFE");
     </script>
 
-    <link href="https://fonts.cdnfonts.com/css/minecraftia" rel="stylesheet" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@800&display=swap" rel="stylesheet" />
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
@@ -221,11 +223,12 @@
       }
       .main-username {
         font-size: 2rem;
-        font-weight: 400;
+        font-weight: 800;
+        font-style: italic;
         letter-spacing: 0.5px;
         color: #fef3c7;
         margin-bottom: 4px;
-        font-family: "Minecraftia", sans-serif;
+        font-family: "Montserrat", sans-serif;
       }
       .main-bio {
         color: #e7e5e4;
@@ -752,10 +755,10 @@
             <div class="main-pfp-wrapper">
                 <img id="static-pfp" src="https://cdn.discordapp.com/embed/avatars/0.png" class="main-pfp" style="${generateOrganicStyle()}">
             </div>
-            <div class="main-username">BlockyFoxBuro</div>
-            <div class="main-bio">🐲 A yellow derg!! :3</div>
-            <div class="main-bio">is a game design student specializing in 3D stuffs</div>
-            <div class="main-bio">Graphic Designer + a Programmer</div>
+            <div class="main-username" style="margin-bottom: 12px;">BlockyFoxBuro</div>
+            <div class="main-bio">🐲 A yellow derg!! :3 🐲</div>
+            <div class="main-bio">🍊 He/Them | Ace ♠️ | 🖤💜🤍💛󠁛󠀣󠁥󠀹󠁥󠀲󠀹󠀱󠀬󠀣󠀶󠁦󠀳󠁥</div>
+            <div class="main-bio">🔰 ~2* | 🎨 3D Artist | 🎮 Game Design Student</div>
         `;
         app.appendChild(mainProfile);
 
@@ -1092,6 +1095,7 @@
         let initialBeta = null,
           initialGamma = null;
         let parallaxEnabled = false; // only when hovering the container
+        const isDesktop = window.matchMedia("(pointer: fine)").matches;
 
         // enable/disable on hover
         container.addEventListener("mouseenter", () => {
@@ -1099,8 +1103,10 @@
         });
         container.addEventListener("mouseleave", () => {
           parallaxEnabled = false;
-          targetX = 0;
-          targetY = 0;
+          containerTargetX = 0;
+          containerTargetY = 0;
+          bgTargetX = 0;
+          bgTargetY = 0;
           // reset gyro flag so tilt won't persist when leaving
           isGyro = false;
         });
@@ -1152,20 +1158,21 @@
 
           const isVertical = window.innerHeight > window.innerWidth;
           const m = isGyro && isVertical ? -1 : 1;
+          const desktopInvert = isDesktop ? -1 : 1;
 
-          const finalContainerX = m * containerCurrentX;
-          const finalContainerY = m * containerCurrentY;
-          const finalBgX = m * bgCurrentX;
-          const finalBgY = m * bgCurrentY;
+          const finalContainerX = desktopInvert * m * containerCurrentX;
+          const finalContainerY = desktopInvert * m * containerCurrentY;
+          const finalBgX = desktopInvert * m * bgCurrentX;
+          const finalBgY = desktopInvert * m * bgCurrentY;
 
           // update CSS vars used by .link-row transforms (container-relative)
           container.style.setProperty("--pointer-x", -finalContainerX);
           container.style.setProperty("--pointer-y", -finalContainerY);
 
           // apply transforms
-          container.style.transform = `perspective(1000px) scale(1.02) rotateY(${-finalContainerX * 6}deg) rotateX(${finalContainerY * 10}deg)`;
-          bgLayer.style.transform = `translate(${finalBgX * 15}px, ${finalBgY * 15}px) scale(1.1)`;
-          grid.style.transform = `translate(${finalBgX * 15}px, ${finalBgY * 15}px)`;
+          container.style.transform = `perspective(1000px) scale(1.02) rotateY(${-finalContainerX * 12}deg) rotateX(${finalContainerY * 10}deg)`;
+          bgLayer.style.transform = `translate(${finalBgX * 30}px, ${finalBgY * 15}px) scale(1.1)`;
+          grid.style.transform = `translate(${finalBgX * 30}px, ${finalBgY * 15}px)`;
 
           requestAnimationFrame(animate);
         };
