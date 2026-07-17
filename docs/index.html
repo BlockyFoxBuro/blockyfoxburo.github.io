@@ -43,9 +43,30 @@
         --dnd: #ef4444;
         --offline: #78716c;
 
-        --shadow-x: 6px;
-        --shadow-y: 6px;
-        --shadow-paper: var(--shadow-x) var(--shadow-y) 0px rgba(0, 0, 0, 0.35);
+        /* --- CORNER RADIUS CUSTOMIZATION (Configure each corner independently) --- */
+        /* Main Container Card Corners */
+        --container-radius-tl: 16px;
+        --container-radius-tr: 16px;
+        --container-radius-br: 16px;
+        --container-radius-bl: 16px;
+
+        /* Static Profile Picture Corners */
+        --pfp-radius-tl: 24px;
+        --pfp-radius-tr: 12px;
+        --pfp-radius-br: 24px;
+        --pfp-radius-bl: 12px;
+
+        /* Discord Widget Card Corners */
+        --widget-radius-tl: 16px;
+        --widget-radius-tr: 24px;
+        --widget-radius-br: 16px;
+        --widget-radius-bl: 24px;
+
+        /* Interactive Link Rows Corners */
+        --link-radius-tl: 12px;
+        --link-radius-tr: 20px;
+        --link-radius-br: 12px;
+        --link-radius-bl: 20px;
       }
 
       * {
@@ -64,10 +85,11 @@
         display: flex;
         flex-direction: column;
         align-items: center;
+        justify-content: center;
         overflow-y: auto;
         overflow-x: hidden;
         position: relative;
-        padding: 80px 0 40px 0;
+        padding: 16px;
       }
 
       #paper-bg {
@@ -116,11 +138,24 @@
 
       .container {
         width: 100%;
-        max-width: 440px;
+        max-width: 526px;
         display: flex;
         flex-direction: column;
         gap: 16px;
-        padding: 24px;
+        padding: 32px 24px;
+        background: rgba(12, 10, 9, 0.72); /* Translucent warm wall background */
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        
+        /* Highlight only on top - all side strokes removed */
+        border-top: 1px solid var(--border);
+        border-left: none;
+        border-right: none;
+        border-bottom: none;
+        
+        /* Multi-corner Customization */
+        border-radius: var(--container-radius-tl) var(--container-radius-tr) var(--container-radius-br) var(--container-radius-bl);
+        
         will-change: transform;
         transform-style: preserve-3d;
         perspective: 1000px;
@@ -155,7 +190,7 @@
         text-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
       }
 
-      /* Divider */
+      /* Divider with top line only */
       .divider {
         height: 2px;
         background: var(--border);
@@ -181,8 +216,8 @@
         width: 100%;
         height: 100%;
         object-fit: cover;
-        border: 3px solid var(--text-main);
-        box-shadow: var(--shadow-paper);
+        border: none;
+        border-radius: 50%;
       }
       .main-username {
         font-size: 2rem;
@@ -202,14 +237,20 @@
       .discord-widget {
         background: var(--surface);
         backdrop-filter: blur(8px);
-        border: 1px solid var(--border);
+        
+        /* Highlight only on top - all side strokes removed */
+        border-top: 1px solid var(--border);
+        border-left: none;
+        border-right: none;
+        border-bottom: none;
+        
+        /* Multi-corner Customization */
+        border-radius: var(--widget-radius-tl) var(--widget-radius-tr) var(--widget-radius-br) var(--widget-radius-bl);
+        
         padding: 20px;
-        /* Dynamic padding-bottom managed via .active class */
         display: flex;
         flex-direction: column;
-        /* removed gap to allow collapsing */
         transform: translateZ(20px);
-        box-shadow: var(--shadow-paper);
         transition:
           padding-bottom 0.3s ease,
           border-color 0.2s,
@@ -241,7 +282,12 @@
         height: 100%;
         border-radius: 50%;
         object-fit: cover;
-        border: 2px solid rgba(255, 255, 255, 0.1);
+        
+        /* Top-stroke decoration details for avatar inside widget */
+        border-top: 2px solid rgba(255, 255, 255, 0.25);
+        border-left: none;
+        border-right: none;
+        border-bottom: none;
       }
       .widget-decoration {
         position: absolute;
@@ -302,19 +348,19 @@
       /* Activity Animation Container */
       .activity-wrapper {
         transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-        max-height: 500px; /* Open state */
+        max-height: 500px;
         opacity: 1;
         transform: scaleY(1);
         transform-origin: top;
         overflow: hidden;
-        margin-top: 12px; /* Margin acts as gap */
+        margin-top: 12px;
       }
 
       .activity-wrapper.collapsed {
         max-height: 0;
         opacity: 0;
         transform: scaleY(0.95);
-        margin-top: 0; /* Remove margin when collapsed */
+        margin-top: 0;
         padding: 0;
         border: none;
       }
@@ -328,7 +374,12 @@
         gap: 12px;
         align-items: center;
         position: relative;
-        border: 1px solid var(--border);
+        
+        /* Highlight only on top */
+        border-top: 1px solid var(--border);
+        border-left: none;
+        border-right: none;
+        border-bottom: none;
       }
       .activity-image-wrapper {
         position: relative;
@@ -420,7 +471,6 @@
         height: 100%;
         border-radius: 6px;
         object-fit: cover;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
       }
 
       .spotify-info {
@@ -531,19 +581,27 @@
         padding: 14px;
         background: var(--surface);
         backdrop-filter: blur(6px);
-        border: 1px solid var(--border);
+        
+        /* Highlight only on top - side and bottom strokes removed */
+        border-top: 1px solid var(--border);
+        border-left: none;
+        border-right: none;
+        border-bottom: none;
+        
+        /* Multi-corner Customization */
+        border-radius: var(--link-radius-tl) var(--link-radius-tr) var(--link-radius-br) var(--link-radius-bl);
+        
         text-decoration: none;
         transition: all 0.3s var(--steam-transition);
         transform: rotate(var(--organic-rot, 0deg)) translateZ(0)
-          translateX(calc(var(--pointer-x) * 10px))
-          translateY(calc(var(--pointer-y) * 10px));
-        box-shadow: var(--shadow-paper);
+          translateX(calc(var(--pointer-x) * 1px))
+          translateY(calc(var(--pointer-y) * 1px));
         position: relative;
         z-index: 1;
         transform-style: preserve-3d;
       }
       .link-row:hover {
-        transform: scale(1.06) rotate(var(--organic-rot, 0deg)) translateZ(30px)
+        transform: scale(1) rotate(var(--organic-rot, 0deg)) translateZ(30px)
           translateX(calc(var(--pointer-x) * 15px))
           translateY(calc(var(--pointer-y) * 15px))
           rotateY(calc(var(--pointer-x) * -10deg))
@@ -551,7 +609,6 @@
         background: var(--surface-hover);
         border-color: var(--text-muted);
         z-index: 100;
-        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
       }
       .link-icon {
         font-size: 1.4rem;
@@ -646,13 +703,10 @@
         },
       ];
 
+      // Generate Organic Rotational wobbles without overwriting CSS Corner Radius
       const generateOrganicStyle = () => {
-        const r1 = Math.floor(10 + Math.random() * 8);
-        const r2 = Math.floor(10 + Math.random() * 8);
-        const r3 = Math.floor(10 + Math.random() * 8);
-        const r4 = Math.floor(10 + Math.random() * 8);
         const rot = (Math.random() * 1.5 - 0.75).toFixed(2);
-        return `border-radius: ${r1}px ${r2}px ${r3}px ${r4}px; --organic-rot: ${rot}deg;`;
+        return `--organic-rot: ${rot}deg;`;
       };
 
       const fetchDiscordProfile = async () => {
@@ -662,7 +716,6 @@
         ];
         for (const url of endpoints) {
           try {
-            // cache: no-store ensures fresh data on every fetch, preventing stale cached responses
             const response = await fetch(url, { cache: "no-store" });
             if (!response.ok) continue;
             const data = await response.json();
@@ -732,7 +785,7 @@
         divider.style.clipPath = `polygon(0% 45%, 15% 55%, 30% 45%, 45% 55%, 60% 45%, 75% 55%, 90% 45%, 100% 55%, 100% 100%, 0% 100%)`;
         app.appendChild(divider);
 
-        // Widget Container - ADDED ID
+        // Widget Container
         const widget = document.createElement("div");
         widget.className = "discord-widget";
         widget.id = "discord-widget";
@@ -755,7 +808,6 @@
             
             <!-- Activity Container -->
             <div id="activity-container" class="activity-wrapper collapsed">
-                <!-- Divider is injected here for smooth animation -->
                 <div class="widget-divider"></div>
                 <div id="activity-content"></div>
             </div>
@@ -884,14 +936,11 @@
         if (discordData.listening_to_spotify && discordData.spotify) {
           const spot = discordData.spotify;
 
-          // If switched to spotify or song changed
           if (lastActivityType !== "spotify" || lastTrackId !== spot.track_id) {
-            // If transitioning from NONE, animate OPEN
-            if (lastActivityType === "none") {
+            if (lastActivityType === "none" || !lastActivityType) {
               activityContainer.classList.remove("collapsed");
               toggleBtn.classList.add("visible");
               toggleBtn.classList.remove("rotated");
-              // Add padding class
               widgetElement.classList.add("active");
             }
 
@@ -943,7 +992,6 @@
                 `;
           }
 
-          // Always Update Progress
           const fill = document.getElementById("spot-fill");
           const curr = document.getElementById("spot-curr");
           if (fill && curr) {
@@ -959,12 +1007,10 @@
           const game = discordData.activities.find((a) => a.type === 0);
           if (game) {
             if (lastActivityType !== "game" || lastTrackId !== game.name) {
-              // If transitioning from NONE, animate OPEN
-              if (lastActivityType === "none") {
+              if (lastActivityType === "none" || !lastActivityType) {
                 activityContainer.classList.remove("collapsed");
                 toggleBtn.classList.add("visible");
                 toggleBtn.classList.remove("rotated");
-                // Add padding class
                 widgetElement.classList.add("active");
               }
 
@@ -1006,7 +1052,6 @@
                     `;
             }
 
-            // Update Game Timer
             if (startTimestamp) {
               const timerEl = document.getElementById("game-timer");
               if (timerEl) {
@@ -1014,18 +1059,14 @@
               }
             }
           } else {
-            // Nothing playing - COLLAPSE EVERYTHING
+            // Nothing playing
             if (lastActivityType !== "none") {
               lastActivityType = "none";
               lastTrackId = null;
 
-              // Animate Closed
               activityContainer.classList.add("collapsed");
               toggleBtn.classList.remove("visible");
-              // Remove padding class
               widgetElement.classList.remove("active");
-
-              // Clear innerHTML after animation (optional, but cleaner to leave it until next update replaces it)
             }
           }
         }
@@ -1038,19 +1079,46 @@
 
         let currentX = 0,
           currentY = 0;
-        let targetX = 0,
-          targetY = 0;
+        // Separate targets/currents for container (card/buttons) and background layers
+        let containerCurrentX = 0,
+          containerCurrentY = 0;
+        let containerTargetX = 0,
+          containerTargetY = 0;
+
+        let bgCurrentX = 0,
+          bgCurrentY = 0;
+        let bgTargetX = 0,
+          bgTargetY = 0;
         let initialBeta = null,
           initialGamma = null;
+        let parallaxEnabled = false; // only when hovering the container
 
+        // enable/disable on hover
+        container.addEventListener("mouseenter", () => {
+          parallaxEnabled = true;
+        });
+        container.addEventListener("mouseleave", () => {
+          parallaxEnabled = false;
+          targetX = 0;
+          targetY = 0;
+          // reset gyro flag so tilt won't persist when leaving
+          isGyro = false;
+        });
+
+        // mouse movement: always update background target; container only when hovered
         window.addEventListener("mousemove", (e) => {
-          targetX = (e.clientX / window.innerWidth) * 2 - 1;
-          targetY = (e.clientY / window.innerHeight) * 2 - 1;
+          const nx = (e.clientX / window.innerWidth) * 2 - 1;
+          const ny = (e.clientY / window.innerHeight) * 2 - 1;
+          bgTargetX = nx;
+          bgTargetY = ny;
+          if (parallaxEnabled) {
+            containerTargetX = nx;
+            containerTargetY = ny;
+          }
         });
 
         if (window.DeviceOrientationEvent) {
           window.addEventListener("deviceorientation", (e) => {
-            isGyro = true;
             const beta = e.beta || 0;
             const gamma = e.gamma || 0;
             if (initialBeta === null) {
@@ -1059,30 +1127,45 @@
             }
             const deltaGamma = gamma - initialGamma;
             const deltaBeta = beta - initialBeta;
-            targetX = Math.min(Math.max(deltaGamma, -45), 45) / 45;
-            targetY = Math.min(Math.max(deltaBeta, -45), 45) / 45;
+            const nx = Math.min(Math.max(deltaGamma, -45), 45) / 45;
+            const ny = Math.min(Math.max(deltaBeta, -45), 45) / 45;
+            // background follows device orientation always
+            bgTargetX = nx;
+            bgTargetY = ny;
+            // container only when hovered
+            if (parallaxEnabled) {
+              isGyro = true;
+              containerTargetX = nx;
+              containerTargetY = ny;
+            }
           });
         }
 
         const animate = () => {
-          currentX += (targetX - currentX) * 0.05;
-          currentY += (targetY - currentY) * 0.05;
+          // interpolate container (card/buttons)
+          containerCurrentX += (containerTargetX - containerCurrentX) * 0.05;
+          containerCurrentY += (containerTargetY - containerCurrentY) * 0.05;
+
+          // interpolate background separately (always follows pointer)
+          bgCurrentX += (bgTargetX - bgCurrentX) * 0.05;
+          bgCurrentY += (bgTargetY - bgCurrentY) * 0.05;
+
           const isVertical = window.innerHeight > window.innerWidth;
           const m = isGyro && isVertical ? -1 : 1;
-          const finalX = m * currentX;
-          const finalY = m * currentY;
 
-          container.style.setProperty("--pointer-x", -finalX);
-          container.style.setProperty("--pointer-y", -finalY);
+          const finalContainerX = m * containerCurrentX;
+          const finalContainerY = m * containerCurrentY;
+          const finalBgX = m * bgCurrentX;
+          const finalBgY = m * bgCurrentY;
 
-          const sX = 6 + finalX * -5;
-          const sY = 6 + finalY * -5;
-          document.documentElement.style.setProperty("--shadow-x", `${sX}px`);
-          document.documentElement.style.setProperty("--shadow-y", `${sY}px`);
+          // update CSS vars used by .link-row transforms (container-relative)
+          container.style.setProperty("--pointer-x", -finalContainerX);
+          container.style.setProperty("--pointer-y", -finalContainerY);
 
-          container.style.transform = `perspective(1000px) scale(1.1) rotateY(${-finalX * 8}deg) rotateX(${finalY * 14}deg)`;
-          bgLayer.style.transform = `translate(${finalX * 15}px, ${finalY * 15}px) scale(1.1)`;
-          grid.style.transform = `translate(${finalX * 15}px, ${finalY * 15}px)`;
+          // apply transforms
+          container.style.transform = `perspective(1000px) scale(1.02) rotateY(${-finalContainerX * 6}deg) rotateX(${finalContainerY * 10}deg)`;
+          bgLayer.style.transform = `translate(${finalBgX * 15}px, ${finalBgY * 15}px) scale(1.1)`;
+          grid.style.transform = `translate(${finalBgX * 15}px, ${finalBgY * 15}px)`;
 
           requestAnimationFrame(animate);
         };
