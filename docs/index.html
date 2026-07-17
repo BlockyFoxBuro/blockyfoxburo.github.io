@@ -221,6 +221,26 @@
         border: none;
         border-radius: 50%;
       }
+      .widget-decoration {
+        position: absolute;
+        top: -12%;
+        left: -12%;
+        width: 124%;
+        height: 124%;
+        pointer-events: none;
+        z-index: 2;
+      }
+      .widget-status-dot {
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        width: 24px;
+        height: 24px;
+        background: var(--offline);
+        border: 4px solid #1c1917;
+        border-radius: 50%;
+        z-index: 3;
+      }
       .main-username {
         font-size: 2rem;
         font-weight: 800;
@@ -236,101 +256,20 @@
         font-weight: 600;
       }
 
-      /* --- WIDGET --- */
-      .discord-widget {
-        background: var(--surface);
-        backdrop-filter: blur(8px);
-        
-        /* Highlight only on top - all side strokes removed */
-        border-top: 1px solid var(--border);
-        border-left: none;
-        border-right: none;
-        border-bottom: none;
-        
-        /* Multi-corner Customization */
-        border-radius: var(--widget-radius-tl) var(--widget-radius-tr) var(--widget-radius-br) var(--widget-radius-bl);
-        
-        padding: 20px;
-        display: flex;
-        flex-direction: column;
-        transform: translateZ(20px);
-        transition:
-          padding-bottom 0.3s ease,
-          border-color 0.2s,
-          background 0.2s;
-        position: relative;
-        margin-top: 8px;
-      }
-      .discord-widget.active {
-        padding-bottom: 36px; /* Space for the arrow */
-      }
-      .discord-widget:hover {
-        background: var(--surface-hover);
-        border-color: var(--text-muted);
-      }
-
-      .widget-header {
-        display: flex;
-        align-items: center;
-        gap: 16px;
-      }
-      .widget-pfp-container {
-        position: relative;
-        width: 56px;
-        height: 56px;
-        flex-shrink: 0;
-      }
-      .widget-pfp {
-        width: 100%;
-        height: 100%;
-        border-radius: 50%;
-        object-fit: cover;
-        
-        /* Top-stroke decoration details for avatar inside widget */
-        border-top: 2px solid rgba(255, 255, 255, 0.25);
-        border-left: none;
-        border-right: none;
-        border-bottom: none;
-      }
-      .widget-decoration {
-        position: absolute;
-        top: -12%;
-        left: -12%;
-        width: 124%;
-        height: 124%;
-        pointer-events: none;
-        z-index: 2;
-      }
-      .widget-status-dot {
-        position: absolute;
-        bottom: -2px;
-        right: -2px;
-        width: 18px;
-        height: 18px;
-        background: var(--offline);
-        border: 4px solid #1c1917;
-        border-radius: 50%;
-        z-index: 3;
-      }
-      .widget-user-details {
-        display: flex;
-        flex-direction: column;
-        gap: 2px;
-        flex: 1;
-      }
-      .widget-username {
-        font-size: 1.1rem;
-        font-weight: 700;
-        color: var(--highlight);
-      }
+      /* --- STYLIZED PREMIUM STATUS BAR (Pill Shape) --- */
       .custom-status-row {
-        display: flex;
+        display: inline-flex;
         align-items: center;
+        justify-content: center;
         gap: 6px;
         font-size: 0.85rem;
         color: var(--text-muted);
-        margin-top: 2px;
+        margin: 6px auto 12px auto;
         font-weight: 500;
+        background: rgba(0, 0, 0, 0.25);
+        padding: 6px 12px;
+        border-radius: 99px;
+        border-top: 1px solid var(--border);
       }
       .emoji-img {
         width: 16px;
@@ -348,22 +287,39 @@
         opacity: 0.5;
       }
 
-      /* Activity Animation Container */
+      /* Activity Animation Container styled like widget but merged into the wall */
       .activity-wrapper {
-        transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+        background: var(--surface);
+        backdrop-filter: blur(8px);
+        border-top: 1px solid var(--border);
+        border-left: none;
+        border-right: none;
+        border-bottom: none;
+        border-radius: var(--widget-radius-tl) var(--widget-radius-tr) var(--widget-radius-br) var(--widget-radius-bl);
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        transition: max-height 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+          opacity 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+          transform 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+          padding 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+          margin 0.35s cubic-bezier(0.4, 0, 0.2, 1);
         max-height: 500px;
         opacity: 1;
         transform: scaleY(1);
         transform-origin: top;
         overflow: hidden;
         margin-top: 12px;
+        margin-bottom: 12px;
+        will-change: max-height, opacity, transform, padding, margin;
       }
 
       .activity-wrapper.collapsed {
         max-height: 0;
         opacity: 0;
-        transform: scaleY(0.95);
+        transform: scaleY(0.92);
         margin-top: 0;
+        margin-bottom: 0;
         padding: 0;
         border: none;
       }
@@ -547,35 +503,6 @@
         color: var(--text-muted);
       }
 
-      /* Toggle Button */
-      .toggle-btn {
-        position: absolute;
-        bottom: 6px;
-        left: 50%;
-        transform: translateX(-50%);
-        color: var(--text-muted);
-        cursor: pointer;
-        width: 40px;
-        height: 20px;
-        display: none;
-        place-items: center;
-        border-radius: 4px;
-        transition: all 0.2s;
-        font-size: 0.8rem;
-        opacity: 0;
-      }
-      .toggle-btn.visible {
-        display: grid;
-        opacity: 1;
-      }
-      .toggle-btn:hover {
-        color: var(--accent);
-        background: rgba(255, 255, 255, 0.05);
-      }
-      .toggle-btn.rotated i {
-        transform: rotate(180deg);
-      }
-
       /* --- LINK ROWS --- */
       .link-row {
         display: flex;
@@ -748,21 +675,34 @@
         const app = document.getElementById("app");
         app.innerHTML = "";
 
-        // Profile
+        // Profile Container (Avatar, Status dot overlay, bios, and custom status merged)
         const mainProfile = document.createElement("div");
         mainProfile.className = "main-profile";
         mainProfile.innerHTML = `
             <div class="main-pfp-wrapper">
                 <img id="static-pfp" src="https://cdn.discordapp.com/embed/avatars/0.png" class="main-pfp" style="${generateOrganicStyle()}">
+                <div id="widget-decoration"></div>
+                <div id="widget-status" class="widget-status-dot"></div>
             </div>
-            <div class="main-username" style="margin-bottom: 12px;">BlockyFoxBuro</div>
+            <div class="main-username" id="widget-username" style="margin-bottom: 4px;">BlockyFoxBuro</div>
+            
+            <!-- Custom status is explicitly positioned above the bios! -->
+            <div id="widget-custom-status"></div>
+            
             <div class="main-bio">🐲 A yellow derg!! :3 🐲</div>
             <div class="main-bio">🍊 He/Them | Ace ♠️ | 🖤💜🤍💛󠁛󠀣󠁥󠀹󠁥󠀲󠀹󠀱󠀬󠀣󠀶󠁦󠀳󠁥</div>
             <div class="main-bio">🔰 ~2* | 🎨 3D Artist | 🎮 Game Design Student</div>
         `;
         app.appendChild(mainProfile);
 
-        // Quick Access
+        // Dynamic presence / active rich presence container (Centered below bios, above icons)
+        const activityContainer = document.createElement("div");
+        activityContainer.className = "activity-wrapper collapsed";
+        activityContainer.id = "activity-container";
+        activityContainer.innerHTML = `<div id="activity-content"></div>`;
+        app.appendChild(activityContainer);
+
+        // Quick Access Bar
         const qaBar = document.createElement("div");
         qaBar.className = "quick-access-bar";
         linksData.forEach((item) => {
@@ -787,54 +727,6 @@
         divider.className = "divider";
         divider.style.clipPath = `polygon(0% 45%, 15% 55%, 30% 45%, 45% 55%, 60% 45%, 75% 55%, 90% 45%, 100% 55%, 100% 100%, 0% 100%)`;
         app.appendChild(divider);
-
-        // Widget Container
-        const widget = document.createElement("div");
-        widget.className = "discord-widget";
-        widget.id = "discord-widget";
-        widget.style.cssText = generateOrganicStyle();
-
-        widget.innerHTML = `
-            <div class="widget-header">
-                <div class="widget-pfp-container">
-                    <img id="widget-pfp" src="https://cdn.discordapp.com/embed/avatars/0.png" class="widget-pfp">
-                    <div id="widget-decoration"></div>
-                    <div id="widget-status" class="widget-status-dot" style="background: var(--offline)"></div>
-                </div>
-                <div class="widget-user-details">
-                    <div class="name-row">
-                        <span id="widget-username" class="widget-username">...</span>
-                    </div>
-                    <div id="widget-custom-status"></div>
-                </div>
-            </div>
-            
-            <!-- Activity Container -->
-            <div id="activity-container" class="activity-wrapper collapsed">
-                <div class="widget-divider"></div>
-                <div id="activity-content"></div>
-            </div>
-            
-            <div class="toggle-btn" id="toggle-activity">
-                <i class="fa-solid fa-chevron-up"></i>
-            </div>
-        `;
-        app.appendChild(widget);
-
-        // Toggle Logic
-        const btn = document.getElementById("toggle-activity");
-        const box = document.getElementById("activity-container");
-        btn.onclick = (e) => {
-          e.stopPropagation();
-          const isHidden = box.classList.contains("collapsed");
-          if (isHidden) {
-            box.classList.remove("collapsed");
-            btn.classList.remove("rotated");
-          } else {
-            box.classList.add("collapsed");
-            btn.classList.add("rotated");
-          }
-        };
 
         // Links
         linksData.forEach((item) => {
@@ -869,33 +761,33 @@
         const user = discordData.discord_user;
         const DISCORD_ID = "321617481766535169";
 
-        // Update Profile
+        // Update Profile Image
         let pfp = "https://cdn.discordapp.com/embed/avatars/0.png";
         if (user.avatar)
           pfp = `https://cdn.discordapp.com/avatars/${DISCORD_ID}/${user.avatar}.png`;
 
         const staticPfp = document.getElementById("static-pfp");
-        const widgetPfp = document.getElementById("widget-pfp");
-        if (staticPfp.src !== pfp) staticPfp.src = pfp;
-        if (widgetPfp.src !== pfp) widgetPfp.src = pfp;
+        if (staticPfp && staticPfp.src !== pfp) staticPfp.src = pfp;
 
         const usernameEl = document.getElementById("widget-username");
         const newName = user.global_name || user.username;
-        if (usernameEl.textContent !== newName)
+        if (usernameEl && usernameEl.textContent !== newName)
           usernameEl.textContent = newName;
 
         const decoContainer = document.getElementById("widget-decoration");
-        if (user.avatar_decoration_data) {
-          const decAsset = user.avatar_decoration_data.asset;
-          const decUrl = `https://cdn.discordapp.com/avatar-decoration-presets/${decAsset}.png`;
-          if (!decoContainer.innerHTML.includes(decAsset)) {
-            decoContainer.innerHTML = `<img src="${decUrl}" class="widget-decoration" alt="decoration">`;
+        if (decoContainer) {
+          if (user.avatar_decoration_data) {
+            const decAsset = user.avatar_decoration_data.asset;
+            const decUrl = `https://cdn.discordapp.com/avatar-decoration-presets/${decAsset}.png`;
+            if (!decoContainer.innerHTML.includes(decAsset)) {
+              decoContainer.innerHTML = `<img src="${decUrl}" class="widget-decoration" alt="decoration">`;
+            }
+          } else {
+            decoContainer.innerHTML = "";
           }
-        } else {
-          decoContainer.innerHTML = "";
         }
 
-        // Status
+        // Status update
         let statusColor = "var(--offline)";
         switch (discordData.discord_status) {
           case "online":
@@ -910,30 +802,31 @@
           default:
             statusColor = "var(--offline)";
         }
-        document.getElementById("widget-status").style.background = statusColor;
+        const statusDot = document.getElementById("widget-status");
+        if (statusDot) statusDot.style.background = statusColor;
 
-        // Custom Status
+        // Custom status update
         const custom = discordData.activities.find((a) => a.type === 4);
         const customContainer = document.getElementById("widget-custom-status");
-        let customHTML = "";
-        if (custom && custom.state) {
-          let emojiHTML = "";
-          if (custom.emoji) {
-            if (custom.emoji.id)
-              emojiHTML = `<img src="https://cdn.discordapp.com/emojis/${custom.emoji.id}.png" class="emoji-img">`;
-            else if (custom.emoji.name)
-              emojiHTML = `<span>${custom.emoji.name}</span>`;
+        if (customContainer) {
+          let customHTML = "";
+          if (custom && custom.state) {
+            let emojiHTML = "";
+            if (custom.emoji) {
+              if (custom.emoji.id)
+                emojiHTML = `<img src="https://cdn.discordapp.com/emojis/${custom.emoji.id}.png" class="emoji-img">`;
+              else if (custom.emoji.name)
+                emojiHTML = `<span>${custom.emoji.name}</span>`;
+            }
+            customHTML = `<div class="custom-status-row">${emojiHTML}<span>${custom.state}</span></div>`;
           }
-          customHTML = `<div class="custom-status-row">${emojiHTML}<span>${custom.state}</span></div>`;
+          if (customContainer.innerHTML !== customHTML)
+            customContainer.innerHTML = customHTML;
         }
-        if (customContainer.innerHTML !== customHTML)
-          customContainer.innerHTML = customHTML;
 
         // --- ACTIVITY LOGIC ---
         const activityContainer = document.getElementById("activity-container");
         const activityContent = document.getElementById("activity-content");
-        const toggleBtn = document.getElementById("toggle-activity");
-        const widgetElement = document.getElementById("discord-widget");
 
         // Check Spotify
         if (discordData.listening_to_spotify && discordData.spotify) {
@@ -942,9 +835,6 @@
           if (lastActivityType !== "spotify" || lastTrackId !== spot.track_id) {
             if (lastActivityType === "none" || !lastActivityType) {
               activityContainer.classList.remove("collapsed");
-              toggleBtn.classList.add("visible");
-              toggleBtn.classList.remove("rotated");
-              widgetElement.classList.add("active");
             }
 
             lastActivityType = "spotify";
@@ -1012,44 +902,68 @@
             if (lastActivityType !== "game" || lastTrackId !== game.name) {
               if (lastActivityType === "none" || !lastActivityType) {
                 activityContainer.classList.remove("collapsed");
-                toggleBtn.classList.add("visible");
-                toggleBtn.classList.remove("rotated");
-                widgetElement.classList.add("active");
               }
 
               lastActivityType = "game";
               lastTrackId = game.name;
               startTimestamp = game.timestamps ? game.timestamps.start : null;
 
+              function resolveDiscordAsset(image, applicationId) {
+                if (!image) {
+                  return "";
+                }
+
+                if (image.startsWith("mp:external/")) {
+                  const httpsIndex = image.indexOf("/https/");
+                  if (httpsIndex !== -1) {
+                    const after = image.slice(httpsIndex + "/https/".length);
+                    return `https://${after}`;
+                  }
+                  return `https://media.discordapp.net/${image.replace("mp:", "")}`;
+                }
+
+                if (image.startsWith("mp:")) {
+                  return `https://media.discordapp.net/${image.replace("mp:", "")}`;
+                }
+
+                // Default to Discord app-assets; fallback to dcdn.dstn.to is handled on the <img> onerror
+                return `https://cdn.discordapp.com/app-assets/${applicationId}/${image}.png`;
+              }
+
               let largeImage =
                 "https://raw.githubusercontent.com/suyashtnt/discord-resources/master/Images/unknown_app.png";
               let smallImage = "";
 
               if (game.assets) {
-                if (game.assets.large_image) {
-                  largeImage = game.assets.large_image.startsWith("mp:")
-                    ? `https://media.discordapp.net/${game.assets.large_image.replace("mp:", "")}`
-                    : `https://cdn.discordapp.com/app-assets/${game.application_id}/${game.assets.large_image}.png`;
+                const resolvedLarge = resolveDiscordAsset(game.assets.large_image, game.application_id);
+                if (resolvedLarge) {
+                  largeImage = resolvedLarge;
                 }
+
                 if (game.assets.small_image) {
-                  const sUrl = game.assets.small_image.startsWith("mp:")
-                    ? `https://media.discordapp.net/${game.assets.small_image.replace("mp:", "")}`
-                    : `https://cdn.discordapp.com/app-assets/${game.application_id}/${game.assets.small_image}.png`;
-                  smallImage = `<img src="${sUrl}" class="activity-small-image">`;
+                  const sUrl = resolveDiscordAsset(game.assets.small_image, game.application_id);
+                  if (sUrl) {
+                    smallImage = `<img src="${sUrl}" class="activity-small-image">`;
+                  }
                 }
               }
 
               activityContent.innerHTML = `
-                        <div class="activity-section">
-                            <div class="activity-image-wrapper">
-                                <img src="${largeImage}" class="activity-large-image">
-                                ${smallImage}
+                        <div class="spotify-container">
+                            <div class="spotify-header">
+                                <i class="fa-solid fa-gamepad"></i> Playing
                             </div>
-                            <div class="activity-info">
-                                <div class="activity-name">${game.name}</div>
-                                <div class="activity-details">${game.details || ""}</div>
-                                <div class="activity-state">${game.state || ""}</div>
-                                ${startTimestamp ? `<div class="activity-timer" id="game-timer">00:00</div>` : ""}
+                            <div class="spotify-body">
+                                <div class="activity-image-wrapper">
+                                    <img src="${largeImage}" class="activity-large-image" onerror="this.onerror=null;this.src='https://dcdn.dstn.to/app-icons/${game.application_id}.png'">
+                                    ${smallImage}
+                                </div>
+                                <div class="spotify-info">
+                                    <div class="spotify-title">${game.name}</div>
+                                    ${game.details ? `<div class="spotify-sub-info">${game.details}</div>` : ""}
+                                    ${game.state ? `<div class="spotify-sub-info">${game.state}</div>` : ""}
+                                    ${startTimestamp ? `<div class="activity-timer" id="game-timer">00:00</div>` : ""}
+                                </div>
                             </div>
                         </div>
                     `;
@@ -1066,15 +980,13 @@
             if (lastActivityType !== "none") {
               lastActivityType = "none";
               lastTrackId = null;
-
               activityContainer.classList.add("collapsed");
-              toggleBtn.classList.remove("visible");
-              widgetElement.classList.remove("active");
             }
           }
         }
       };
 
+      // 3. PARALLAX CONTROLLER
       const initParallax = () => {
         const container = document.querySelector(".container");
         const bgLayer = document.getElementById("paper-bg");
@@ -1082,7 +994,6 @@
 
         let currentX = 0,
           currentY = 0;
-        // Separate targets/currents for container (card/buttons) and background layers
         let containerCurrentX = 0,
           containerCurrentY = 0;
         let containerTargetX = 0,
@@ -1094,10 +1005,9 @@
           bgTargetY = 0;
         let initialBeta = null,
           initialGamma = null;
-        let parallaxEnabled = false; // only when hovering the container
+        let parallaxEnabled = false; 
         const isDesktop = window.matchMedia("(pointer: fine)").matches;
 
-        // enable/disable on hover
         container.addEventListener("mouseenter", () => {
           parallaxEnabled = true;
         });
@@ -1107,11 +1017,9 @@
           containerTargetY = 0;
           bgTargetX = 0;
           bgTargetY = 0;
-          // reset gyro flag so tilt won't persist when leaving
           isGyro = false;
         });
 
-        // mouse movement: always update background target; container only when hovered
         window.addEventListener("mousemove", (e) => {
           const nx = (e.clientX / window.innerWidth) * 2 - 1;
           const ny = (e.clientY / window.innerHeight) * 2 - 1;
@@ -1135,10 +1043,8 @@
             const deltaBeta = beta - initialBeta;
             const nx = Math.min(Math.max(deltaGamma, -45), 45) / 45;
             const ny = Math.min(Math.max(deltaBeta, -45), 45) / 45;
-            // background follows device orientation always
             bgTargetX = nx;
             bgTargetY = ny;
-            // container only when hovered
             if (parallaxEnabled) {
               isGyro = true;
               containerTargetX = nx;
@@ -1148,11 +1054,9 @@
         }
 
         const animate = () => {
-          // interpolate container (card/buttons)
           containerCurrentX += (containerTargetX - containerCurrentX) * 0.05;
           containerCurrentY += (containerTargetY - containerCurrentY) * 0.05;
 
-          // interpolate background separately (always follows pointer)
           bgCurrentX += (bgTargetX - bgCurrentX) * 0.05;
           bgCurrentY += (bgTargetY - bgCurrentY) * 0.05;
 
@@ -1165,11 +1069,9 @@
           const finalBgX = desktopInvert * m * bgCurrentX;
           const finalBgY = desktopInvert * m * bgCurrentY;
 
-          // update CSS vars used by .link-row transforms (container-relative)
           container.style.setProperty("--pointer-x", -finalContainerX);
           container.style.setProperty("--pointer-y", -finalContainerY);
 
-          // apply transforms
           container.style.transform = `perspective(1000px) scale(1.02) rotateY(${-finalContainerX * 12}deg) rotateX(${finalContainerY * 10}deg)`;
           bgLayer.style.transform = `translate(${finalBgX * 30}px, ${finalBgY * 15}px) scale(1.1)`;
           grid.style.transform = `translate(${finalBgX * 30}px, ${finalBgY * 15}px)`;
