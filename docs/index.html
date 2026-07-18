@@ -27,6 +27,7 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
     />
+    
     <style>
       :root {
         /* Warm/Paper Palette */
@@ -147,7 +148,7 @@
         display: flex;
         flex-direction: column;
         gap: 16px;
-        padding: 32px 24px;
+        padding: 28px 24px;
         background: rgba(12, 10, 9, 0.72); /* Translucent warm wall background */
         backdrop-filter: blur(20px);
         -webkit-backdrop-filter: blur(20px);
@@ -173,7 +174,8 @@
         display: flex;
         justify-content: center;
         gap: 24px;
-        padding-bottom: 12px;
+        padding-top: 8px;
+        padding-bottom: 8px;
       }
       .qa-icon {
         font-size: 1.4rem;
@@ -197,34 +199,14 @@
 
       /* Divider with top line only */
       .divider {
-        height: 2px;
+        height: 1px;
         background: var(--border);
         width: 100%;
-        margin-bottom: 12px;
-        opacity: 0.6;
+        margin-bottom: 4px;
+        opacity: 1;
       }
 
-      /* --- PROFILE --- */
-      .profile-banner {
-        position: relative;
-        overflow: hidden;
-        border-radius: var(--container-radius-tl) var(--container-radius-tr) var(--container-radius-br) var(--container-radius-bl);
-        aspect-ratio: 16 / 9;
-        min-height: 220px;
-        background-image: url("images/banner.png");
-        background-size: cover;
-        background-position: center;
-        box-shadow: inset 0 -80px 90px rgba(0, 0, 0, 0.55);
-      }
-
-      .profile-banner::before {
-        content: "";
-        position: absolute;
-        inset: 0;
-        background: linear-gradient(180deg, rgba(0, 0, 0, 0.08) 0%, rgba(0, 0, 0, 0.5) 100%);
-        pointer-events: none;
-      }
-
+      /* --- PROFILE HEADER --- */
       .main-profile {
         position: relative;
         z-index: 1;
@@ -233,12 +215,9 @@
         justify-content: center;
         align-items: center;
         width: 100%;
-        height: 100%;
         text-align: center;
-        margin-bottom: 0;
-        padding: 24px 8px 0px;
+        padding: 8px 0 16px 0;
         transform: translateZ(30px);
-        text-shadow: 2px 2px 0px rgba(0, 0, 0, 0.5);
       }
       .main-pfp-wrapper {
         position: relative;
@@ -286,13 +265,22 @@
         font-style: italic;
         letter-spacing: 0.5px;
         color: #fef3c7;
-        margin-bottom: 4px;
+        margin-bottom: 2px;
         font-family: "Montserrat", sans-serif;
+      }
+      .main-bios-container {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        align-items: center;
+        width: 100%;
+        margin-top: 4px;
       }
       .main-bio {
         color: #e7e5e4;
         font-size: 0.95rem;
         font-weight: 400;
+        line-height: 1.35;
       }
 
       /* --- STYLIZED PREMIUM STATUS BAR (Pill Shape) --- */
@@ -303,7 +291,7 @@
         gap: 6px;
         font-size: 0.85rem;
         color: var(--text-muted);
-        margin: 6px auto 12px auto;
+        margin: 4px auto 12px auto;
         font-weight: 500;
         background: rgba(0, 0, 0, 0.25);
         padding: 6px 12px;
@@ -314,16 +302,6 @@
         width: 16px;
         height: 16px;
         object-fit: contain;
-      }
-
-      .widget-divider {
-        height: 2px;
-        background: var(--border);
-        width: 100%;
-        margin: 4px 0 12px 0;
-        display: block;
-        border-radius: 2px;
-        opacity: 0.5;
       }
 
       /* Activity Animation Container styled like widget but merged into the wall */
@@ -348,8 +326,8 @@
         transform: scaleY(1);
         transform-origin: top;
         overflow: hidden;
-        margin-top: 12px;
-        margin-bottom: 12px;
+        margin-top: 4px;
+        margin-bottom: 4px;
         will-change: max-height, opacity, transform, padding, margin;
       }
 
@@ -357,8 +335,8 @@
         max-height: 0;
         opacity: 0;
         transform: scaleY(0.92);
-        margin-top: 0;
-        margin-bottom: 0;
+        margin-top: -8px;
+        margin-bottom: -8px;
         padding: 0;
         border: none;
       }
@@ -372,8 +350,6 @@
         gap: 12px;
         align-items: center;
         position: relative;
-        
-        /* Highlight only on top */
         border-top: 1px solid var(--border);
         border-left: none;
         border-right: none;
@@ -637,11 +613,8 @@
         position: relative;
         width: 100%;
         z-index: 2;
-        transition: padding-top 0.35s var(--transition);
-      }
-
-      .more-links-wrapper.expanded {
-        padding-top: 76px;
+        display: flex;
+        flex-direction: column;
       }
 
       .more-links-toggle {
@@ -667,7 +640,7 @@
         content: "";
         width: 100%;
         height: 1px;
-        background: rgba(255, 255, 255, 0.18);
+        background: var(--border);
         opacity: 1;
       }
 
@@ -682,10 +655,7 @@
       }
 
       .more-links-list {
-        position: absolute;
-        left: 0;
-        right: 0;
-        top: 0;
+        width: 100%;
         z-index: 3;
         display: grid;
         grid-template-rows: 0fr;
@@ -827,15 +797,11 @@
         return `${m}:${s}`;
       };
 
-      // 1. RENDER STATIC STRUCTURE ONCE
       const initStructure = () => {
         const app = document.getElementById("app");
         app.innerHTML = "";
 
         // Profile Container (Avatar, Status dot overlay, bios, and custom status merged)
-        const bannerWrapper = document.createElement("div");
-        bannerWrapper.className = "profile-banner";
-
         const mainProfile = document.createElement("div");
         mainProfile.className = "main-profile";
         mainProfile.innerHTML = `
@@ -846,14 +812,16 @@
                 <div id="widget-decoration"></div>
                 <div id="widget-status" class="widget-status-dot"></div>
             </div>
-            <div class="main-username" id="widget-username" style="margin-bottom: 4px;">BlockyFoxBuro</div>
+            <div class="main-username" id="widget-username">BlockyFoxBuro</div>
             
             <!-- Custom status is explicitly positioned above the bios! -->
             <div id="widget-custom-status"></div>
             
-            <div class="main-bio">🐲 A yellow derg!! :3 🐲</div>
-            <div class="main-bio">🍊 He/Them | Ace ♠️ | 🖤💜🤍💛󠁛󠀣󠁥󠀹󠁥󠀲󠀹󠀱󠀬󠀣󠀶󠁦󠀳󠁥</div>
-            <div class="main-bio">🔰 ~2* | 🎨 3D Artist | 📝 Game Design Student</div>
+            <div class="main-bios-container">
+                <div class="main-bio">🐲 A yellow derg!! :3 🐲</div>
+                <div class="main-bio">🍊 He/Them | Ace ♠️ | 🖤💜🤍💛󠁛󠀣󠁥󠀹󠁥󠀲󠀹󠀱󠀬󠀣󠀶󠁦󠀳󠁥</div>
+                <div class="main-bio">🔰 ~2* | 🎨 3D Artist | 📝 Game Design Student</div>
+            </div>
         `;
         app.appendChild(mainProfile);
 
@@ -972,7 +940,6 @@
         }
       };
 
-      // 2. UPDATE LOGIC (Runs every 1s)
       const updateWidget = async () => {
         const discordData = await fetchDiscordProfile();
         if (!discordData) return;
@@ -1205,7 +1172,6 @@
         }
       };
 
-      // 3. PARALLAX CONTROLLER
       const initParallax = () => {
         const container = document.querySelector(".container");
         const bgLayer = document.getElementById("paper-bg");
