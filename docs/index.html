@@ -22,7 +22,6 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <!-- Importing Minecraftia pixel font alongside Montserrat for headers -->
     <link href="https://fonts.cdnfonts.com/css/minecraftia" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@800&display=swap" rel="stylesheet" />
     <link
@@ -32,7 +31,6 @@
     
     <style>
       :root {
-        /* Warm/Paper Palette */
         --bg-color: #0c0a09;
         --pfp-spin-strength: 12deg;
         --surface: rgba(28, 25, 23, 0.65);
@@ -51,7 +49,6 @@
         --dnd: #ef4444;
         --offline: #78716c;
 
-        /* --- CORNER RADIUS CUSTOMIZATION --- */
         --container-radius-tl: 16px;
         --container-radius-tr: 16px;
         --container-radius-br: 16px;
@@ -166,7 +163,6 @@
         margin: 0 auto;
       }
 
-      /* Clean floating Guns.lol style counter with no background (Completely static, pixelated Minecraft font) */
       .card-counter {
         position: absolute;
         top: 18px;
@@ -181,7 +177,8 @@
         color: rgba(255, 255, 255, 0.35);
         font-family: 'Minecraftia', monospace;
         letter-spacing: 0.5px;
-        pointer-events: none; /* Completely static and non-clickable */
+        pointer-events: auto;
+        cursor: default;
         z-index: 10;
         user-select: none;
       }
@@ -191,7 +188,34 @@
         color: rgba(255, 255, 255, 0.35);
       }
 
-      /* --- QUICK ACCESS --- */
+      .counter-pill-tooltip {
+        position: fixed;
+        top: 0;
+        left: 0;
+        background: rgba(12, 10, 9, 0.92);
+        color: var(--text-main);
+        border: 1px solid var(--border);
+        padding: 4px 10px;
+        border-radius: 99px;
+        font-family: 'Minecraftia', monospace;
+        font-size: 0.65rem;
+        letter-spacing: 0.5px;
+        pointer-events: none;
+        z-index: 10000;
+        opacity: 0;
+        transform: translate(-50%, 6px);
+        transition: opacity 0.15s ease, transform 0.15s ease;
+        white-space: nowrap;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+      }
+
+      .counter-pill-tooltip.visible {
+        opacity: 1;
+        transform: translate(-50%, 0);
+      }
+
       .quick-access-bar {
         display: flex;
         justify-content: center;
@@ -219,7 +243,6 @@
         text-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
       }
 
-      /* Divider with top line only */
       .divider {
         height: 1px;
         background: var(--border);
@@ -304,7 +327,6 @@
         line-height: 1.35;
       }
 
-      /* --- STYLIZED PREMIUM STATUS BAR --- */
       .custom-status-row {
         display: inline-flex;
         align-items: center;
@@ -421,7 +443,6 @@
         font-variant-numeric: tabular-nums;
       }
 
-      /* Spotify Specific */
       .spotify-container {
         display: flex;
         flex-direction: column;
@@ -703,13 +724,13 @@
     <div id="vignette"></div>
 
     <div class="container" id="app"></div>
+    <div id="counter-tooltip" class="counter-pill-tooltip">Unique Visitors</div>
 
     <script>
       const DISCORD_ID = "321617481766535169";
       let isGyro = false;
 
-      // State tracking
-      let lastActivityType = null; // 'spotify', 'game', 'none'
+      let lastActivityType = null;
       let lastTrackId = null;
       let startTimestamp = null;
 
@@ -808,7 +829,6 @@
         const app = document.getElementById("app");
         app.innerHTML = "";
 
-        // Floating, non-interactive visual counter (Using solid eye icon and dynamic text)
         const counterBadge = document.createElement("div");
         counterBadge.className = "card-counter";
         counterBadge.id = "card-counter";
@@ -818,7 +838,22 @@
         `;
         app.appendChild(counterBadge);
 
-        // Profile Container (Avatar, Status dot overlay, bios, and custom status merged)
+        const tooltipEl = document.getElementById("counter-tooltip");
+        if (counterBadge && tooltipEl) {
+          counterBadge.addEventListener("mouseenter", () => {
+            tooltipEl.classList.add("visible");
+          });
+
+          counterBadge.addEventListener("mousemove", (e) => {
+            tooltipEl.style.left = `${e.clientX}px`;
+            tooltipEl.style.top = `${e.clientY + 18}px`;
+          });
+
+          counterBadge.addEventListener("mouseleave", () => {
+            tooltipEl.classList.remove("visible");
+          });
+        }
+
         const mainProfile = document.createElement("div");
         mainProfile.className = "main-profile";
         mainProfile.innerHTML = `
@@ -841,14 +876,12 @@
         `;
         app.appendChild(mainProfile);
 
-        // Dynamic presence / active rich presence container
         const activityContainer = document.createElement("div");
         activityContainer.className = "activity-wrapper collapsed";
         activityContainer.id = "activity-container";
         activityContainer.innerHTML = `<div id="activity-content"></div>`;
         app.appendChild(activityContainer);
 
-        // Quick Access Bar
         const qaBar = document.createElement("div");
         qaBar.className = "quick-access-bar";
         linksData.forEach((item) => {
@@ -868,13 +901,11 @@
         });
         app.appendChild(qaBar);
 
-        // Divider
         const divider = document.createElement("div");
         divider.className = "divider";
         divider.style.clipPath = `polygon(0% 45%, 15% 55%, 30% 45%, 45% 55%, 60% 45%, 75% 55%, 90% 45%, 100% 55%, 100% 100%, 0% 100%)`;
         app.appendChild(divider);
 
-        // Links
         const visibleLinks = linksData.slice(0, 4);
         const hiddenLinks = linksData.slice(4);
 
@@ -960,70 +991,32 @@
         const viewsCountEl = document.getElementById("views-count");
         if (!viewsCountEl) return;
 
-        const COOLDOWN_DURATION = 5 * 60 * 1000; // 5 minutes cooldown period
-        const currentTime = Date.now();
-        const nextAllowedIncrement = localStorage.getItem("blocky_next_allowed_increment");
-        const cachedViews = localStorage.getItem("blocky_cached_views_count");
-        
-        // Check if user is eligible to increment or if they are in the 5 minute cooldown
-        let shouldIncrement = false;
-        if (!nextAllowedIncrement || currentTime >= parseInt(nextAllowedIncrement)) {
-          shouldIncrement = true;
-        }
+        const today = new Date().toISOString().split("T")[0];
+        const lastVisit = localStorage.getItem("blocky_last_visit_date");
+        const isLiveSite = window.location.origin === "https://blockyfoxburo.github.io";
 
-        // CRITICAL NETWORK BYPASS: If inside the 5-minute cooldown, bypass the Cloudflare Worker 
-        // network hit entirely. This stops your custom worker from registering an increment 
-        // whenever the page refreshes.
-        if (!shouldIncrement && cachedViews) {
-          viewsCountEl.textContent = parseInt(cachedViews).toLocaleString();
-          return;
-        }
-
-        const fetchUrl = "https://counter.buro.workers.dev/buro_counter";
-
-        // Initialize and increment simulated fallback metric in case worker API fails or is offline
-        const fallbackBaseValue = 8241;
-        let localViewsCount = parseInt(localStorage.getItem("blocky_local_views") || "0");
-        if (localViewsCount === 0) {
-          localViewsCount = fallbackBaseValue + Math.floor(Math.random() * 85);
-        } else if (shouldIncrement) {
-          localViewsCount += 1;
-        }
-        localStorage.setItem("blocky_local_views", localViewsCount);
+        const shouldIncrement = isLiveSite && lastVisit !== today;
+        const method = shouldIncrement ? "POST" : "GET";
 
         try {
-          const res = await fetch(fetchUrl);
+          const res = await fetch("https://counter.buro.workers.dev/buro_counter", {
+            method: method,
+          });
+
           if (res.ok) {
-            const text = await res.text();
-            let countVal = null;
-            try {
-              // Extract counter value whether the worker responds with raw text or structured JSON keys
-              const data = JSON.parse(text);
-              countVal = data.count ?? data.views ?? data.value ?? Object.values(data)[0];
-            } catch {
-              countVal = parseInt(text.trim());
-            }
+            const data = await res.json();
+            const countVal = data.count ?? data.views ?? data.value;
 
             if (countVal && !isNaN(countVal)) {
-              viewsCountEl.textContent = countVal.toLocaleString();
-              localStorage.setItem("blocky_cached_views_count", countVal);
-              
+              viewsCountEl.textContent = parseInt(countVal).toLocaleString();
+
               if (shouldIncrement) {
-                // Lock increments for 5 minutes
-                localStorage.setItem("blocky_next_allowed_increment", (currentTime + COOLDOWN_DURATION).toString());
+                localStorage.setItem("blocky_last_visit_date", today);
               }
-              return;
             }
           }
         } catch (error) {
-          console.warn("Custom Worker Counter API unreachable; falling back to local tally.", error);
-        }
-
-        // Fallback update
-        viewsCountEl.textContent = localViewsCount.toLocaleString();
-        localStorage.setItem("blocky_cached_views_count", localViewsCount);
-        if (shouldIncrement) {
-          localStorage.setItem("blocky_next_allowed_increment", (currentTime + COOLDOWN_DURATION).toString());
+          console.warn("Worker counter API unreachable", error);
         }
       };
 
@@ -1033,7 +1026,6 @@
 
         const user = discordData.discord_user;
 
-        // Update Profile Image
         let pfp = "https://cdn.discordapp.com/embed/avatars/0.png";
         if (user.avatar)
           pfp = `https://cdn.discordapp.com/avatars/${DISCORD_ID}/${user.avatar}.png`;
@@ -1059,7 +1051,6 @@
           }
         }
 
-        // Status update
         let statusColor = "var(--offline)";
         switch (discordData.discord_status) {
           case "online":
@@ -1077,7 +1068,6 @@
         const statusDot = document.getElementById("widget-status");
         if (statusDot) statusDot.style.background = statusColor;
 
-        // Custom status update
         const custom = discordData.activities.find((a) => a.type === 4);
         const customContainer = document.getElementById("widget-custom-status");
         if (customContainer) {
@@ -1096,11 +1086,9 @@
             customContainer.innerHTML = customHTML;
         }
 
-        // --- ACTIVITY LOGIC ---
         const activityContainer = document.getElementById("activity-container");
         const activityContent = document.getElementById("activity-content");
 
-        // Check Spotify
         if (discordData.listening_to_spotify && discordData.spotify) {
           const spot = discordData.spotify;
 
@@ -1168,7 +1156,6 @@
             curr.textContent = formatTime(Math.max(current, 0));
           }
         } else {
-          // Check Game
           const game = discordData.activities.find((a) => a.type === 0);
           if (game) {
             if (lastActivityType !== "game" || lastTrackId !== game.name) {
@@ -1247,7 +1234,6 @@
               }
             }
           } else {
-            // Nothing playing
             if (lastActivityType !== "none") {
               lastActivityType = "none";
               lastTrackId = null;
@@ -1353,12 +1339,8 @@
         initStructure();
         updateWidget();
         initParallax();
-        
-        // Single initial fetch of the views counter (perfectly governed by the 5-minute cooldown)
         updateViewsCounter(); 
-        
-        // Polling loop configurations
-        setInterval(updateWidget, 1000); // Poll discord state every second (safe to poll since it has no write limits)
+        setInterval(updateWidget, 1000);
       });
     </script>
   </body>
