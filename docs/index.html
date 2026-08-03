@@ -991,12 +991,10 @@
       const viewsCountEl = document.getElementById("views-count");
       if (!viewsCountEl) return;
 
-      const today = new Date().toISOString().split("T")[0];
-      const lastVisit = localStorage.getItem("blocky_last_visit_date");
+      const counterKey = "blocky_counter_incremented";
+      const hasIncremented = localStorage.getItem(counterKey) === "true";
       const isLiveSite = window.location.origin === "https://blockyfoxburo.github.io";
-
-      const shouldIncrement = isLiveSite && lastVisit !== today;
-      const method = shouldIncrement ? "POST" : "GET";
+      const method = !hasIncremented && isLiveSite ? "POST" : "GET";
 
       try {
         const res = await fetch("https://counter.buro.workers.dev/buro_counter", {
@@ -1010,8 +1008,8 @@
           if (countVal && !isNaN(countVal)) {
             viewsCountEl.textContent = parseInt(countVal).toLocaleString();
 
-            if (shouldIncrement) {
-              localStorage.setItem("blocky_last_visit_date", today);
+            if (method === "POST") {
+              localStorage.setItem(counterKey, "true");
             }
           }
         }
